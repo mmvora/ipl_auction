@@ -21,8 +21,14 @@
 
     /* Header */
     .header-bar { background: var(--surface); border-bottom: 1px solid var(--border); }
-    .logo-img   { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--gold); flex-shrink: 0; }
-    .logo-fallback { width: 32px; height: 32px; border-radius: 50%; background: var(--gold); color: #000; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .logo-img   { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); flex-shrink: 0; }
+    .logo-fallback { width: 48px; height: 48px; border-radius: 50%; background: var(--gold); color: #000; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    /* Countdown */
+    .cd-seg { background: var(--muted-bg); border: 1px solid var(--border); border-radius: 5px; padding: 4px 9px; display: inline-flex; align-items: baseline; gap: 2px; font-variant-numeric: tabular-nums; }
+    .cd-num { font-size: 0.85rem; font-weight: 700; color: var(--fg); }
+    .cd-unit { font-size: 0.6rem; font-weight: 600; color: var(--muted); }
+    .cd-sep { color: var(--border); font-size: 0.75rem; font-weight: 300; }
 
     /* Nav */
     .nav-link { color: var(--muted); font-size: 0.875rem; font-weight: 500; padding: 0 2px 14px; position: relative; text-decoration: none; transition: color 0.15s; white-space: nowrap; }
@@ -73,9 +79,17 @@
             <div style="font-size:0.65rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold);">2026 Season</div>
           </div>
         </div>
-        <div style="font-size:0.7rem; font-weight:500; color:var(--muted); background:var(--muted-bg); border:1px solid var(--border); border-radius:999px; padding:4px 12px; display:flex; align-items:center; gap:6px;">
-          <span style="width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;"></span>
-          Pre-Season
+        <div id="countdown" style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:0.65rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted);">Auction in</span>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <span class="cd-seg"><span class="cd-num" id="cd-d">--</span><span class="cd-unit">d</span></span>
+            <span class="cd-sep">:</span>
+            <span class="cd-seg"><span class="cd-num" id="cd-h">--</span><span class="cd-unit">h</span></span>
+            <span class="cd-sep">:</span>
+            <span class="cd-seg"><span class="cd-num" id="cd-m">--</span><span class="cd-unit">m</span></span>
+            <span class="cd-sep">:</span>
+            <span class="cd-seg"><span class="cd-num" id="cd-s">--</span><span class="cd-unit">s</span></span>
+          </div>
         </div>
       </div>
       <nav style="display:flex; gap:28px;">
@@ -119,6 +133,33 @@
       <div id="empty-state" class="hidden" style="text-align:center; padding:60px 24px; color:var(--muted); font-size:0.875rem;">
         No teams registered yet.
       </div>
+    </div>
+
+    <!-- Payment instructions -->
+    <div style="margin-top:24px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:20px 24px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+        <span style="font-size:1rem;">💰</span>
+        <span style="font-size:0.8rem; font-weight:700; color:var(--fg);">Confirm Your Spot</span>
+        <span style="margin-left:auto; font-size:0.7rem; font-weight:600; background:rgba(247,192,26,0.1); color:var(--gold); border:1px solid rgba(247,192,26,0.25); border-radius:4px; padding:2px 8px;">$200 Entry Fee</span>
+      </div>
+      <p style="font-size:0.8rem; color:var(--muted); margin:0 0 16px; line-height:1.6;">
+        Pay <strong style="color:var(--fg);">$200 HKD</strong> to Malhaar via PayMe or FPS to lock in your team before the auction. Your fee status above will be updated once payment is confirmed.
+      </p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:180px; background:var(--muted-bg); border:1px solid var(--border); border-radius:8px; padding:14px 16px;">
+          <div style="font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;">PayMe</div>
+          <div style="font-size:0.9rem; font-weight:700; color:var(--fg);">@Malhaar</div>
+          <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;">Search by name / phone</div>
+        </div>
+        <div style="flex:1; min-width:180px; background:var(--muted-bg); border:1px solid var(--border); border-radius:8px; padding:14px 16px;">
+          <div style="font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;">FPS</div>
+          <div style="font-size:0.9rem; font-weight:700; color:var(--fg);">Malhaar</div>
+          <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;">Use registered phone / ID</div>
+        </div>
+      </div>
+      <p style="font-size:0.72rem; color:var(--muted); margin:12px 0 0; line-height:1.5;">
+        After paying, drop a message in the group so Malhaar can mark you as paid.
+      </p>
     </div>
 
   </main>
@@ -174,6 +215,26 @@
     }
 
     render();
+
+    // Countdown to 8 Mar 2026 8PM HKT (UTC+8)
+    const auctionDate = new Date('2026-03-08T20:00:00+08:00');
+    function tick() {
+      const diff = auctionDate - new Date();
+      if (diff <= 0) {
+        document.getElementById('countdown').innerHTML = '<span style="color:var(--gold);font-weight:700;font-size:0.85rem;">🔨 Auction is LIVE!</span>';
+        return;
+      }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('cd-d').textContent = String(d).padStart(2, '0');
+      document.getElementById('cd-h').textContent = String(h).padStart(2, '0');
+      document.getElementById('cd-m').textContent = String(m).padStart(2, '0');
+      document.getElementById('cd-s').textContent = String(s).padStart(2, '0');
+    }
+    tick();
+    setInterval(tick, 1000);
   </script>
 </body>
 </html>
