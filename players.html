@@ -3,57 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Players — IPL Auction</title>
+  <title>IPL Fantasy League 2026 — Players</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ipl: { blue: '#002B7F', gold: '#F7C01A', light: '#E8F0FE' }
-          }
-        }
-      }
-    }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Segoe UI', system-ui, sans-serif; }
-    .nav-link { transition: color 0.2s, border-color 0.2s; }
-    .nav-link.active { border-bottom: 3px solid #F7C01A; color: #F7C01A; }
+    * { font-family: 'Inter', system-ui, sans-serif; }
+    body { background: #08080f; }
+
+    .nav-link { color: #6b7280; transition: color 0.2s; position: relative; padding-bottom: 14px; }
+    .nav-link:hover { color: #F7C01A; }
+    .nav-link.active { color: #F7C01A; }
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: #F7C01A;
+      border-radius: 2px 2px 0 0;
+    }
+
+    .logo-img {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #F7C01A;
+      flex-shrink: 0;
+    }
+    .logo-fallback {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #F7C01A, #ff8c00);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 13px; color: #08080f;
+      flex-shrink: 0;
+    }
+
+    .header-line { height: 3px; background: linear-gradient(90deg, #F7C01A 0%, #ff6b35 50%, #F7C01A 100%); }
+
+    .coming-card {
+      background: #111118;
+      border: 1px solid #1e1e2e;
+      border-radius: 24px;
+      padding: 60px 48px;
+    }
+
+    .glow-icon {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: rgba(247,192,26,0.08);
+      border: 1px solid rgba(247,192,26,0.2);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+      font-size: 44px;
+    }
   </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="min-h-screen">
 
-  <!-- Header -->
-  <header class="bg-ipl-blue text-white shadow-lg">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="flex items-center justify-between py-4">
+  <div class="header-line"></div>
+
+  <header style="background:#0d0d16; border-bottom:1px solid #1e1e2e;">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex items-center justify-between py-5">
         <div class="flex items-center gap-3">
-          <span class="text-3xl">🏏</span>
+          <img src="logo.jpg" class="logo-img" alt="IFL" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="logo-fallback" style="display:none;">IFL</div>
           <div>
-            <h1 class="text-xl font-bold tracking-wide">IPL Auction</h1>
-            <p class="text-xs text-blue-200 tracking-widest uppercase">League Management</p>
+            <h1 class="text-white font-black text-lg tracking-tight leading-none">IPL Fantasy League</h1>
+            <p class="text-xs font-bold tracking-widest uppercase mt-0.5" style="color:#F7C01A;">2026 Season</p>
           </div>
         </div>
+        <div class="hidden sm:flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full" style="background:#1a1a2e;color:#6b7280;border:1px solid #2e2e4e;">
+          <span class="w-2 h-2 rounded-full animate-pulse" style="background:#F7C01A;"></span>
+          Pre-Season
+        </div>
       </div>
-      <nav class="flex gap-6 text-sm font-medium">
-        <a href="index.html" class="nav-link py-3 px-1 text-blue-200 hover:text-ipl-gold">Teams</a>
-        <a href="auction.html" class="nav-link py-3 px-1 text-blue-200 hover:text-ipl-gold">Auction</a>
-        <a href="players.html" class="nav-link active py-3 px-1 text-white hover:text-ipl-gold">Players</a>
+      <nav class="flex gap-8 text-sm font-semibold">
+        <a href="index.html"   class="nav-link">Teams</a>
+        <a href="auction.html" class="nav-link">Auction</a>
+        <a href="players.html" class="nav-link active">Players</a>
       </nav>
     </div>
   </header>
 
-  <!-- Main -->
-  <main class="max-w-6xl mx-auto px-4 py-20 text-center">
-    <div class="text-7xl mb-6">👤</div>
-    <h2 class="text-3xl font-bold text-gray-800 mb-3">Players List</h2>
-    <p class="text-gray-500 text-lg mb-2">Coming Soon</p>
-    <p class="text-gray-400 text-sm max-w-md mx-auto">
-      Browse all players available for auction — stats, base prices, categories, and more. Check back once the player pool is finalized.
-    </p>
-    <div class="mt-10 inline-block bg-ipl-blue text-white text-xs font-semibold px-5 py-2 rounded-full tracking-widest uppercase">
-      Stay Tuned
+  <main class="max-w-2xl mx-auto px-6 py-20 text-center">
+    <div class="coming-card">
+      <div class="glow-icon">🏏</div>
+      <h2 class="text-3xl font-black text-white mb-3">Players List</h2>
+      <p class="text-base font-semibold mb-2" style="color:#F7C01A;">Coming Soon</p>
+      <p class="text-sm leading-relaxed" style="color:#4b5563;">
+        The full player pool will be listed here — stats, base prices, roles, and categories. Check back once the player list is finalised.
+      </p>
+      <div class="mt-8 inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase px-5 py-2.5 rounded-full" style="background:rgba(247,192,26,0.08);color:#F7C01A;border:1px solid rgba(247,192,26,0.2);">
+        <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:#F7C01A;"></span>
+        Stay Tuned
+      </div>
     </div>
   </main>
 
