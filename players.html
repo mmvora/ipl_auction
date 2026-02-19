@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Players — IPL Auction</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ipl: { blue: '#002B7F', gold: '#F7C01A', light: '#E8F0FE' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .nav-link { transition: color 0.2s, border-color 0.2s; }
+    .nav-link.active { border-bottom: 3px solid #F7C01A; color: #F7C01A; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-ipl-blue text-white shadow-lg">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex items-center justify-between py-4">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🏏</span>
+          <div>
+            <h1 class="text-xl font-bold tracking-wide">IPL Auction</h1>
+            <p class="text-xs text-blue-200 tracking-widest uppercase">League Management</p>
+          </div>
+        </div>
+      </div>
+      <nav class="flex gap-6 text-sm font-medium">
+        <a href="index.html" class="nav-link py-3 px-1 text-blue-200 hover:text-ipl-gold">Teams</a>
+        <a href="auction.html" class="nav-link py-3 px-1 text-blue-200 hover:text-ipl-gold">Auction</a>
+        <a href="players.html" class="nav-link active py-3 px-1 text-white hover:text-ipl-gold">Players</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-6xl mx-auto px-4 py-20 text-center">
+    <div class="text-7xl mb-6">👤</div>
+    <h2 class="text-3xl font-bold text-gray-800 mb-3">Players List</h2>
+    <p class="text-gray-500 text-lg mb-2">Coming Soon</p>
+    <p class="text-gray-400 text-sm max-w-md mx-auto">
+      Browse all players available for auction — stats, base prices, categories, and more. Check back once the player pool is finalized.
+    </p>
+    <div class="mt-10 inline-block bg-ipl-blue text-white text-xs font-semibold px-5 py-2 rounded-full tracking-widest uppercase">
+      Stay Tuned
+    </div>
+  </main>
+
+</body>
+</html>

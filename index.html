@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPL Auction</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ipl: {
+              blue: '#002B7F',
+              gold: '#F7C01A',
+              light: '#E8F0FE',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .nav-link { transition: color 0.2s, border-color 0.2s; }
+    .nav-link.active { border-bottom: 3px solid #F7C01A; color: #F7C01A; }
+    .fee-badge { display: inline-block; padding: 2px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+    .fee-paid { background: #d1fae5; color: #065f46; }
+    .fee-unpaid { background: #fee2e2; color: #991b1b; }
+    .team-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+    .team-card { transition: transform 0.2s, box-shadow 0.2s; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-ipl-blue text-white shadow-lg">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex items-center justify-between py-4">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🏏</span>
+          <div>
+            <h1 class="text-xl font-bold tracking-wide">IPL Auction</h1>
+            <p class="text-xs text-blue-200 tracking-widest uppercase">League Management</p>
+          </div>
+        </div>
+      </div>
+      <!-- Nav -->
+      <nav class="flex gap-6 text-sm font-medium">
+        <a href="index.html" class="nav-link active py-3 px-1 text-white hover:text-ipl-gold">Teams</a>
+        <a href="auction.html" class="nav-link py-3 px-1 text-blue-200 hover:text-ipl-gold">Auction</a>
+        <a href="players.html" class="nav-link py-3 px-1 text-blue-200 hover:text-ipl-gold">Players</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800">Teams</h2>
+        <p class="text-gray-500 text-sm mt-1">All registered teams for this season</p>
+      </div>
+      <div class="bg-ipl-blue text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
+        <span id="team-count">0</span> Teams
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="grid grid-cols-3 gap-4 mb-8">
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+        <p class="text-3xl font-bold text-ipl-blue" id="stat-total">0</p>
+        <p class="text-xs text-gray-500 mt-1 uppercase tracking-wide">Total Teams</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+        <p class="text-3xl font-bold text-emerald-600" id="stat-paid">0</p>
+        <p class="text-xs text-gray-500 mt-1 uppercase tracking-wide">Fees Paid</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+        <p class="text-3xl font-bold text-red-500" id="stat-unpaid">0</p>
+        <p class="text-xs text-gray-500 mt-1 uppercase tracking-wide">Fees Pending</p>
+      </div>
+    </div>
+
+    <!-- Teams Grid -->
+    <div id="teams-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="hidden text-center py-24 text-gray-400">
+      <div class="text-6xl mb-4">🏏</div>
+      <p class="text-lg font-medium">No teams yet</p>
+      <p class="text-sm mt-1">Teams will appear here once the admin adds them</p>
+    </div>
+  </main>
+
+  <script>
+    // Teams data — admin will manage this via the admin panel (coming soon)
+    const teams = [];
+
+    function render() {
+      const grid = document.getElementById('teams-grid');
+      const empty = document.getElementById('empty-state');
+      const count = teams.length;
+      const paid = teams.filter(t => t.feesPaid).length;
+      const unpaid = count - paid;
+
+      document.getElementById('team-count').textContent = count;
+      document.getElementById('stat-total').textContent = count;
+      document.getElementById('stat-paid').textContent = paid;
+      document.getElementById('stat-unpaid').textContent = unpaid;
+
+      if (count === 0) {
+        grid.classList.add('hidden');
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      grid.classList.remove('hidden');
+      empty.classList.add('hidden');
+
+      grid.innerHTML = teams.map(team => `
+        <div class="team-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="h-2" style="background: ${team.color || '#002B7F'}"></div>
+          <div class="p-5">
+            <div class="flex items-start justify-between mb-3">
+              <div class="text-3xl">${team.logo || '🏏'}</div>
+              <span class="fee-badge ${team.feesPaid ? 'fee-paid' : 'fee-unpaid'}">
+                ${team.feesPaid ? '✓ Paid' : '⏳ Pending'}
+              </span>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800">${team.name}</h3>
+            <p class="text-sm text-gray-500 mt-1">
+              <span class="font-medium text-gray-600">Owner:</span> ${team.owner}
+            </p>
+            ${team.budget ? `<p class="text-xs text-gray-400 mt-3 font-medium">Budget: ₹${team.budget}Cr</p>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    render();
+  </script>
+</body>
+</html>
