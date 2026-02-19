@@ -3,100 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IPL Auction</title>
+  <title>IPL Fantasy League 2026 — Teams</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ipl: {
-              blue: '#002B7F',
-              gold: '#F7C01A',
-              light: '#E8F0FE',
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Segoe UI', system-ui, sans-serif; }
-    .nav-link { transition: color 0.2s, border-color 0.2s; }
-    .nav-link.active { border-bottom: 3px solid #F7C01A; color: #F7C01A; }
-    .fee-badge { display: inline-block; padding: 2px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
-    .fee-paid { background: #d1fae5; color: #065f46; }
-    .fee-unpaid { background: #fee2e2; color: #991b1b; }
-    .team-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
-    .team-card { transition: transform 0.2s, box-shadow 0.2s; }
+    * { font-family: 'Inter', system-ui, sans-serif; }
+    body { background: #08080f; }
+
+    .nav-link { color: #6b7280; transition: color 0.2s; position: relative; padding-bottom: 14px; }
+    .nav-link:hover { color: #F7C01A; }
+    .nav-link.active { color: #F7C01A; }
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: #F7C01A;
+      border-radius: 2px 2px 0 0;
+    }
+
+    .team-card {
+      background: #111118;
+      border: 1px solid #1e1e2e;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .team-card:hover {
+      transform: translateY(-3px);
+      border-color: #2e2e4e;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    }
+
+    .stat-card { background: #111118; border: 1px solid #1e1e2e; border-radius: 14px; }
+
+    .badge-paid   { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.25); }
+    .badge-unpaid { background: rgba(239,68,68,0.10);  color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
+
+    .logo-img {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #F7C01A;
+      flex-shrink: 0;
+    }
+    .logo-fallback {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #F7C01A, #ff8c00);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 13px; color: #08080f;
+      flex-shrink: 0;
+    }
+
+    .header-line { height: 3px; background: linear-gradient(90deg, #F7C01A 0%, #ff6b35 50%, #F7C01A 100%); }
   </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="min-h-screen">
 
-  <!-- Header -->
-  <header class="bg-ipl-blue text-white shadow-lg">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="flex items-center justify-between py-4">
+  <div class="header-line"></div>
+
+  <header style="background:#0d0d16; border-bottom:1px solid #1e1e2e;">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex items-center justify-between py-5">
         <div class="flex items-center gap-3">
-          <span class="text-3xl">🏏</span>
+          <img src="logo.jpg" class="logo-img" alt="IFL" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="logo-fallback" style="display:none;">IFL</div>
           <div>
-            <h1 class="text-xl font-bold tracking-wide">IPL Auction</h1>
-            <p class="text-xs text-blue-200 tracking-widest uppercase">League Management</p>
+            <h1 class="text-white font-black text-lg tracking-tight leading-none">IPL Fantasy League</h1>
+            <p class="text-xs font-bold tracking-widest uppercase mt-0.5" style="color:#F7C01A;">2026 Season</p>
           </div>
         </div>
+        <div class="hidden sm:flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full" style="background:#1a1a2e;color:#6b7280;border:1px solid #2e2e4e;">
+          <span class="w-2 h-2 rounded-full animate-pulse" style="background:#F7C01A;"></span>
+          Pre-Season
+        </div>
       </div>
-      <!-- Nav -->
-      <nav class="flex gap-6 text-sm font-medium">
-        <a href="index.html" class="nav-link active py-3 px-1 text-white hover:text-ipl-gold">Teams</a>
-        <a href="auction.html" class="nav-link py-3 px-1 text-blue-200 hover:text-ipl-gold">Auction</a>
-        <a href="players.html" class="nav-link py-3 px-1 text-blue-200 hover:text-ipl-gold">Players</a>
+      <nav class="flex gap-8 text-sm font-semibold">
+        <a href="index.html"   class="nav-link active">Teams</a>
+        <a href="auction.html" class="nav-link">Auction</a>
+        <a href="players.html" class="nav-link">Players</a>
       </nav>
     </div>
   </header>
 
-  <!-- Main -->
-  <main class="max-w-6xl mx-auto px-4 py-10">
-    <div class="flex items-center justify-between mb-8">
+  <main class="max-w-6xl mx-auto px-6 py-10">
+
+    <div class="flex items-end justify-between mb-8">
       <div>
-        <h2 class="text-2xl font-bold text-gray-800">Teams</h2>
-        <p class="text-gray-500 text-sm mt-1">All registered teams for this season</p>
+        <p class="text-xs font-bold tracking-widest uppercase mb-1" style="color:#F7C01A;">2026 Season</p>
+        <h2 class="text-3xl font-black text-white">Teams</h2>
       </div>
-      <div class="bg-ipl-blue text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
-        <span id="team-count">0</span> Teams
+      <span class="text-sm font-semibold px-4 py-2 rounded-full" style="background:#111118;color:#6b7280;border:1px solid #1e1e2e;">
+        <span id="team-count">0</span> registered
+      </span>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4 mb-10">
+      <div class="stat-card p-5 text-center">
+        <p class="text-4xl font-black text-white" id="stat-total">0</p>
+        <p class="text-xs font-semibold tracking-widest uppercase mt-2" style="color:#4b5563;">Total Teams</p>
+      </div>
+      <div class="stat-card p-5 text-center">
+        <p class="text-4xl font-black" style="color:#34d399;" id="stat-paid">0</p>
+        <p class="text-xs font-semibold tracking-widest uppercase mt-2" style="color:#4b5563;">Fees Paid</p>
+      </div>
+      <div class="stat-card p-5 text-center">
+        <p class="text-4xl font-black" style="color:#f87171;" id="stat-unpaid">0</p>
+        <p class="text-xs font-semibold tracking-widest uppercase mt-2" style="color:#4b5563;">Fees Pending</p>
       </div>
     </div>
 
-    <!-- Stats Bar -->
-    <div class="grid grid-cols-3 gap-4 mb-8">
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-        <p class="text-3xl font-bold text-ipl-blue" id="stat-total">0</p>
-        <p class="text-xs text-gray-500 mt-1 uppercase tracking-wide">Total Teams</p>
-      </div>
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-        <p class="text-3xl font-bold text-emerald-600" id="stat-paid">0</p>
-        <p class="text-xs text-gray-500 mt-1 uppercase tracking-wide">Fees Paid</p>
-      </div>
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
-        <p class="text-3xl font-bold text-red-500" id="stat-unpaid">0</p>
-        <p class="text-xs text-gray-500 mt-1 uppercase tracking-wide">Fees Pending</p>
-      </div>
-    </div>
+    <div id="teams-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
-    <!-- Teams Grid -->
-    <div id="teams-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <!-- Populated by JS -->
-    </div>
-
-    <!-- Empty state -->
-    <div id="empty-state" class="hidden text-center py-24 text-gray-400">
+    <div id="empty-state" class="hidden text-center py-24">
       <div class="text-6xl mb-4">🏏</div>
-      <p class="text-lg font-medium">No teams yet</p>
-      <p class="text-sm mt-1">Teams will appear here once the admin adds them</p>
+      <p class="text-lg font-semibold" style="color:#374151;">No teams yet</p>
     </div>
+
   </main>
 
   <script>
-    // Teams data — admin will manage this via the admin panel (coming soon)
     const teams = [
       { name: "Heet Hurricanes",      owner: "Heet",     feesPaid: false, color: "#0EA5E9", logo: "🌀" },
       { name: "Divij Dragons",        owner: "Divij",    feesPaid: false, color: "#DC2626", logo: "🐉" },
@@ -114,15 +141,15 @@
     ];
 
     function render() {
-      const grid = document.getElementById('teams-grid');
+      const grid  = document.getElementById('teams-grid');
       const empty = document.getElementById('empty-state');
-      const count = teams.length;
-      const paid = teams.filter(t => t.feesPaid).length;
+      const count  = teams.length;
+      const paid   = teams.filter(t => t.feesPaid).length;
       const unpaid = count - paid;
 
-      document.getElementById('team-count').textContent = count;
-      document.getElementById('stat-total').textContent = count;
-      document.getElementById('stat-paid').textContent = paid;
+      document.getElementById('team-count').textContent  = count;
+      document.getElementById('stat-total').textContent  = count;
+      document.getElementById('stat-paid').textContent   = paid;
       document.getElementById('stat-unpaid').textContent = unpaid;
 
       if (count === 0) {
@@ -130,25 +157,21 @@
         empty.classList.remove('hidden');
         return;
       }
-
       grid.classList.remove('hidden');
       empty.classList.add('hidden');
 
       grid.innerHTML = teams.map(team => `
-        <div class="team-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div class="h-2" style="background: ${team.color || '#002B7F'}"></div>
+        <div class="team-card">
+          <div style="height:3px;background:${team.color};"></div>
           <div class="p-5">
-            <div class="flex items-start justify-between mb-3">
-              <div class="text-3xl">${team.logo || '🏏'}</div>
-              <span class="fee-badge ${team.feesPaid ? 'fee-paid' : 'fee-unpaid'}">
+            <div class="flex items-start justify-between mb-4">
+              <span class="text-3xl">${team.logo}</span>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full ${team.feesPaid ? 'badge-paid' : 'badge-unpaid'}">
                 ${team.feesPaid ? '✓ Paid' : '⏳ Pending'}
               </span>
             </div>
-            <h3 class="text-lg font-bold text-gray-800">${team.name}</h3>
-            <p class="text-sm text-gray-500 mt-1">
-              <span class="font-medium text-gray-600">Owner:</span> ${team.owner}
-            </p>
-            ${team.budget ? `<p class="text-xs text-gray-400 mt-3 font-medium">Budget: ₹${team.budget}Cr</p>` : ''}
+            <h3 class="text-white font-bold text-base leading-tight">${team.name}</h3>
+            <p class="text-xs mt-1.5" style="color:#6b7280;">Owner &nbsp;<span style="color:#9ca3af;">${team.owner}</span></p>
           </div>
         </div>
       `).join('');
