@@ -79,7 +79,9 @@
             <div style="font-size:0.65rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold);">2026 Season</div>
           </div>
         </div>
-        <div id="countdown" style="display:flex; align-items:center; gap:10px;">
+        <div id="countdown" style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;">
+          <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.05em; color:var(--gold);">Auction: Sat 28 Feb, 11 PM HKT</span>
+          <div style="display:flex; align-items:center; gap:10px;">
           <span style="font-size:0.65rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted);">Auction in</span>
           <div style="display:flex; align-items:center; gap:4px;">
             <span class="cd-seg"><span class="cd-num" id="cd-d">--</span><span class="cd-unit">d</span></span>
@@ -89,6 +91,7 @@
             <span class="cd-seg"><span class="cd-num" id="cd-m">--</span><span class="cd-unit">m</span></span>
             <span class="cd-sep">:</span>
             <span class="cd-seg"><span class="cd-num" id="cd-s">--</span><span class="cd-unit">s</span></span>
+          </div>
           </div>
         </div>
       </div>
@@ -216,8 +219,8 @@
 
     render();
 
-    // Countdown to 8 Mar 2026 8PM HKT (UTC+8)
-    const auctionDate = new Date('2026-03-08T20:00:00+08:00');
+    // Countdown to 28 Feb 2026 11PM HKT (UTC+8)
+    const auctionDate = new Date('2026-02-28T23:00:00+08:00');
     function tick() {
       const diff = auctionDate - new Date();
       if (diff <= 0) {
