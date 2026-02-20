@@ -2,21 +2,96 @@
   // ── Shared styles ─────────────────────────────────────────────────────────
   const style = document.createElement('style');
   style.textContent = `
-    :root { --bg:#09090b; --surface:#0f0f11; --border:#27272a; --muted:#71717a; --muted-bg:#18181b; --fg:#fafafa; --gold:#F7C01A; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    :root {
+      --bg:       #060e20;
+      --surface:  #0c1829;
+      --border:   #1c3058;
+      --muted:    #7b8fb5;
+      --muted-bg: #0e1e38;
+      --fg:       #eef2ff;
+      --gold:     #F7C11E;
+      --gold-glow: rgba(247,193,30,0.18);
+    }
+
     * { font-family:'Inter',system-ui,sans-serif; box-sizing:border-box; }
-    body { background:var(--bg); color:var(--fg); min-height:100vh; margin:0; }
-    .header-bar { background:var(--surface); border-bottom:1px solid var(--border); }
-    .logo-img { width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--gold); flex-shrink:0; }
-    .logo-fallback { width:48px; height:48px; border-radius:50%; background:var(--gold); color:#000; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-    .nav-link { color:var(--muted); font-size:0.875rem; font-weight:500; padding:0 2px 14px; position:relative; text-decoration:none; transition:color 0.15s; white-space:nowrap; }
-    .nav-link:hover { color:var(--fg); }
-    .nav-link.active { color:var(--fg); }
-    .nav-link.active::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:var(--fg); }
-    .top-line { height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); opacity:0.6; }
-    .cd-seg { background:var(--muted-bg); border:1px solid var(--border); border-radius:5px; padding:4px 9px; display:inline-flex; align-items:baseline; gap:2px; font-variant-numeric:tabular-nums; }
-    .cd-num { font-size:0.85rem; font-weight:700; color:var(--fg); }
-    .cd-unit { font-size:0.6rem; font-weight:600; color:var(--muted); }
-    .cd-sep { color:var(--border); font-size:0.75rem; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100vh;
+      margin: 0;
+      background-image:
+        radial-gradient(ellipse 110% 45% at 50% 0%, #0e2448 0%, var(--bg) 65%);
+    }
+
+    /* ── Top shimmer line ── */
+    .top-line {
+      height: 3px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        #8a6a00 8%,
+        var(--gold) 30%,
+        #fff3a8 50%,
+        var(--gold) 70%,
+        #8a6a00 92%,
+        transparent 100%
+      );
+    }
+
+    /* ── Header ── */
+    .header-bar {
+      background: rgba(7, 13, 30, 0.97);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+
+    /* ── Logo ── */
+    .logo-img {
+      width: 48px; height: 48px; border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 10px rgba(247,193,30,0.35);
+      flex-shrink: 0;
+    }
+    .logo-fallback {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, #c49a00, var(--gold));
+      color: #07111e; font-size: 14px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(247,193,30,0.35);
+    }
+
+    /* ── Nav ── */
+    .nav-link {
+      color: var(--muted); font-size: 0.875rem; font-weight: 500;
+      padding: 0 2px 14px; position: relative;
+      text-decoration: none; transition: color 0.15s; white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--fg); }
+    .nav-link.active { color: var(--gold); font-weight: 600; }
+    .nav-link.active::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      border-radius: 1px;
+    }
+
+    /* ── Countdown ── */
+    .cd-seg {
+      background: var(--muted-bg);
+      border: 1px solid var(--border);
+      border-radius: 5px; padding: 4px 9px;
+      display: inline-flex; align-items: baseline; gap: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .cd-num { font-size: 0.85rem; font-weight: 700; color: var(--gold); }
+    .cd-unit { font-size: 0.6rem; font-weight: 600; color: var(--muted); }
+    .cd-sep { color: var(--border); font-size: 0.75rem; }
   `;
   document.head.appendChild(style);
 
@@ -43,8 +118,8 @@
               <img src="logo.jpg" class="logo-img" alt="IFL" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
               <div class="logo-fallback" style="display:none;">IFL</div>
               <div>
-                <div style="font-weight:700;font-size:0.9rem;color:var(--fg);line-height:1.2;">IPL Fantasy League</div>
-                <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);">2026 Season</div>
+                <div style="font-weight:800;font-size:0.95rem;color:var(--fg);line-height:1.2;letter-spacing:0.01em;">IPL Fantasy League</div>
+                <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);">2026 Season</div>
               </div>
             </div>
             <div id="countdown" style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">

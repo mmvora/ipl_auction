@@ -14,8 +14,8 @@
       border:1px solid var(--border); background:var(--muted-bg); color:var(--muted);
       cursor:pointer; transition:all 0.15s; white-space:nowrap;
     }
-    .team-tab:hover { color:var(--fg); border-color:#3f3f46; }
-    .team-tab.active { background:var(--gold); color:#000; border-color:var(--gold); }
+    .team-tab:hover { color:var(--fg); border-color:var(--gold); }
+    .team-tab.active { background:var(--gold); color:#07111e; border-color:var(--gold); font-weight:700; }
 
     /* Filter pills */
     .filter-pill {
@@ -24,7 +24,7 @@
       cursor:pointer; transition:all 0.15s;
     }
     .filter-pill:hover { color:var(--fg); }
-    .filter-pill.active { background:#27272a; color:var(--fg); border-color:#52525b; }
+    .filter-pill.active { background:var(--muted-bg); color:var(--gold); border-color:var(--gold); }
 
     /* Search */
     .search-input {
@@ -33,7 +33,7 @@
       transition:border-color 0.15s; width:220px;
     }
     .search-input::placeholder { color:var(--muted); }
-    .search-input:focus { border-color:#52525b; }
+    .search-input:focus { border-color:var(--gold); }
 
     /* Table */
     .players-table { width:100%; border-collapse:collapse; }
@@ -42,9 +42,9 @@
       text-transform:uppercase; color:var(--muted); padding:10px 14px;
       border-bottom:1px solid var(--border); white-space:nowrap;
     }
-    .players-table td { padding:10px 14px; font-size:0.83rem; border-bottom:1px solid #1c1c1f; }
+    .players-table td { padding:10px 14px; font-size:0.83rem; border-bottom:1px solid var(--border); }
     .players-table tr:last-child td { border-bottom:none; }
-    .players-table tr:hover td { background:#0d0d0f; }
+    .players-table tr:hover td { background:var(--muted-bg); }
     .players-table .num { color:var(--muted); font-size:0.75rem; width:36px; }
 
     /* Badges */
