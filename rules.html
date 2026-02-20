@@ -7,21 +7,232 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    .coming-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:80px 48px; text-align:center; max-width:480px; margin:0 auto; }
-    .icon-wrap { width:64px; height:64px; border-radius:50%; background:var(--muted-bg); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; margin:0 auto 24px; font-size:28px; }
+    .rules-wrap { max-width:780px; margin:0 auto; }
+
+    .rules-title { font-size:1.6rem; font-weight:800; color:var(--fg); margin:0 0 4px; }
+    .rules-subtitle { font-size:0.75rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin:0 0 36px; }
+
+    .section { margin-bottom:36px; }
+    .section-header {
+      display:flex; align-items:center; gap:10px;
+      font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted);
+      border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:16px;
+    }
+    .section-num {
+      width:22px; height:22px; border-radius:50%; background:var(--gold); color:#000;
+      font-size:0.65rem; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+
+    .rule-block { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:16px 20px; margin-bottom:10px; }
+    .rule-block p { margin:0 0 8px; font-size:0.875rem; line-height:1.65; color:var(--fg); }
+    .rule-block p:last-child { margin-bottom:0; }
+    .rule-block ul { margin:6px 0 0 16px; padding:0; list-style:disc; }
+    .rule-block ul li { font-size:0.875rem; line-height:1.65; color:var(--fg); margin-bottom:4px; }
+    .rule-block ul li:last-child { margin-bottom:0; }
+    .rule-block ul ul { margin-top:4px; list-style:circle; }
+
+    .highlight { color:var(--gold); font-weight:700; }
+    .rule-note { font-size:0.78rem; color:var(--muted); font-style:italic; margin-top:8px !important; }
+
+    .teams-grid {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:8px;
+    }
+    .team-pill {
+      background:var(--surface); border:1px solid var(--border); border-radius:6px;
+      padding:8px 14px; font-size:0.82rem; font-weight:500; color:var(--fg);
+    }
+
+    .prize-row {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 20px; border-bottom:1px solid var(--border);
+    }
+    .prize-row:last-child { border-bottom:none; }
+    .prize-place { font-size:0.82rem; font-weight:600; color:var(--muted); }
+    .prize-amount { font-size:1rem; font-weight:700; color:var(--gold); }
+    .prize-special { font-size:0.75rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-left:8px; }
+
+    a.rule-link { color:var(--gold); text-decoration:underline; text-underline-offset:2px; }
+    a.rule-link:hover { opacity:0.8; }
+
+    .divider { height:1px; background:var(--border); margin:36px 0; }
   </style>
   <script src="header.js"></script>
 </head>
 <body>
 
-  <main style="max-width:1024px;margin:0 auto;padding:64px 24px;">
-    <div class="coming-card">
-      <div class="icon-wrap">📋</div>
-      <h2 style="font-size:1.15rem;font-weight:700;margin:0 0 6px;">League Rules</h2>
-      <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin:0 0 14px;">Coming Soon</p>
-      <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin:0;">
-        The official rulebook for the 2026 season will be published here — auction format, scoring, trades, and more.
-      </p>
+  <main style="max-width:1024px;margin:0 auto;padding:48px 24px;">
+    <div class="rules-wrap">
+
+      <h1 class="rules-title">IPL Fantasy 2026</h1>
+      <p class="rules-subtitle">Official League Rules</p>
+
+      <!-- Teams -->
+      <div class="section">
+        <div class="section-header">
+          <span>Teams Participating</span>
+        </div>
+        <div class="teams-grid">
+          <div class="team-pill">Darshan Daredevils</div>
+          <div class="team-pill">Moksh Mavericks</div>
+          <div class="team-pill">Vrushank Vikings</div>
+          <div class="team-pill">Shrey Strikers</div>
+          <div class="team-pill">Sai Supernovas</div>
+          <div class="team-pill">Dev Dynamos</div>
+          <div class="team-pill">Malhaar Monarchs</div>
+          <div class="team-pill">Heet Hurricanes</div>
+          <div class="team-pill">Shivansh Sharks</div>
+          <div class="team-pill">Divij Dragons</div>
+          <div class="team-pill">Rishab Risers</div>
+          <div class="team-pill">Div Dominators</div>
+          <div class="team-pill">Mirs Magicians</div>
+        </div>
+      </div>
+
+      <!-- 1. Entry & Auction -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">1</span>
+          <span>Entry &amp; Auction</span>
+        </div>
+        <div class="rule-block">
+          <p>Each participant must pay <span class="highlight">$200 HKD</span> to enter the league.</p>
+          <ul>
+            <li>Payments <strong>must</strong> be settled before the auction begins.</li>
+            <li>Upon entry, each participant will receive <span class="highlight">100 Cr</span> to spend in the auction.</li>
+          </ul>
+        </div>
+        <div class="rule-block">
+          <p>The auction will take place via video call, using a custom-built auction software that provides real-time updates on player purchases, remaining budget, and squad details.</p>
+        </div>
+        <div class="rule-block">
+          <p>The auction will be held on <span class="highlight">Saturday 28th February from 11:00 PM HKT</span> onwards.</p>
+        </div>
+      </div>
+
+      <!-- 2. Squad Composition -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">2</span>
+          <span>Squad Composition</span>
+        </div>
+        <div class="rule-block">
+          <p>Each participant must build a squad of <span class="highlight">11 players</span>, adhering to the following minimums:</p>
+          <ul>
+            <li>Batters: minimum 2</li>
+            <li>Bowlers: minimum 2</li>
+            <li>Wicketkeeper: minimum 1</li>
+            <li>Remaining slots are free to fill as you choose</li>
+          </ul>
+        </div>
+        <div class="rule-block">
+          <p>While there is no limit on the number of overseas players you can purchase during the auction, please keep in mind that no more than 4 overseas players can participate in an IPL match.</p>
+        </div>
+        <div class="rule-block">
+          <p>Once a team of 11 has been selected during the auction, no player transfers can be made and you will keep the same team through both the league and playoff stages.</p>
+        </div>
+      </div>
+
+      <!-- 3. Scoring -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">3</span>
+          <span>Scoring System</span>
+        </div>
+        <div class="rule-block">
+          <p>Players earn points based on their real-life performances in the IPL. We use the official IPL Fantasy scoring rules:</p>
+          <p style="margin-top:10px;">
+            <a class="rule-link" href="https://ipl.zendesk.com/hc/en-us/articles/900002627746-Fantasy-Points-System" target="_blank" rel="noopener">
+              IPL Fantasy Points System →
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <!-- 4. Player Replacements -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">4</span>
+          <span>Player Replacements</span>
+        </div>
+        <div class="rule-block">
+          <p>Each team receives <span class="highlight">1 Injury Card</span> per season.</p>
+          <ul>
+            <li>The card may be used when a player in your squad has been officially ruled out for the remainder of the season.</li>
+            <li>You can only use it once — it does not refresh.</li>
+            <li>Replacements must be <strong>like-for-like</strong> by position (e.g. keeper for keeper, bowler for bowler).</li>
+            <li>Injury Cards <strong>can be traded</strong> between teams.</li>
+            <li>All replacement decisions are at the sole discretion of the League Master.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 5. Prize Pool -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">5</span>
+          <span>Prize Pool</span>
+        </div>
+        <div class="rule-block" style="padding:0; overflow:hidden;">
+          <div class="prize-row">
+            <span class="prize-place">🥇 1st Place</span>
+            <span class="prize-amount">$1,450 HKD</span>
+          </div>
+          <div class="prize-row">
+            <span class="prize-place">🥈 2nd Place</span>
+            <span class="prize-amount">$750 HKD</span>
+          </div>
+          <div class="prize-row">
+            <span class="prize-place">🥉 3rd Place</span>
+            <span class="prize-amount">$300 HKD</span>
+          </div>
+          <div class="prize-row">
+            <span class="prize-place">⭐ Best Player Award <span class="prize-special">Special Award</span></span>
+            <span class="prize-amount">$100 HKD</span>
+          </div>
+        </div>
+        <p class="rule-note" style="margin:6px 4px 0;">⭐ Awarded to the participant who owns the individual player with the highest fantasy points total across the whole season.</p>
+        <p class="rule-note" style="margin:10px 4px 0;">Total prize pool: $2,600 HKD (13 participants × $200 entry fee)</p>
+      </div>
+
+      <!-- 6. Trading Window -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">6</span>
+          <span>Trading Window</span>
+        </div>
+        <div class="rule-block">
+          <p><strong>Captains &amp; Vice Captains</strong></p>
+          <ul>
+            <li>Each team is allowed <span class="highlight">1 leadership change</span> per season — you may swap your Captain or Vice Captain once.</li>
+            <li>Making a second leadership change results in your team being stripped of <strong>both</strong> Captain and Vice Captain for the remainder of the season.</li>
+            <li>You may <strong>not</strong> trade your Captain or Vice Captain.</li>
+          </ul>
+        </div>
+        <div class="rule-block">
+          <p><strong>Trading Window</strong></p>
+          <ul>
+            <li>The trading window opens after the <span class="highlight">first ball</span> of the IPL season and closes when the <span class="highlight">playoffs begin</span>.</li>
+            <li>During this window you may trade any eligible player with a player from another team.</li>
+            <li>Inform the League Master of any trade at least <span class="highlight">6 hours</span> before the next game — otherwise the trade takes effect on the following matchday.</li>
+            <li>Points accrued by a player will <strong>not</strong> transfer with the trade.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 7. Authority -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">7</span>
+          <span>Authority &amp; Final Decisions</span>
+        </div>
+        <div class="rule-block">
+          <ul>
+            <li>The League Master does not take any cut from the entry fees — all collected money goes into the prize pool.</li>
+            <li>All disputes, rule clarifications, and final decisions rest solely with the League Master.</li>
+          </ul>
+        </div>
+      </div>
+
     </div>
   </main>
 
