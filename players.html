@@ -59,9 +59,20 @@
     .badge-indian    { background:#1f1a00; color:#fbbf24; border:1px solid #78350f; }
     .badge-overseas  { background:#001f1f; color:#2dd4bf; border:1px solid #134e4a; }
     .badge-team      { background:var(--muted-bg); color:var(--muted); border:1px solid var(--border); font-size:0.68rem; }
+    .badge-price-5cr { background:rgba(247,193,30,0.12); color:var(--gold); border:1px solid rgba(247,193,30,0.3); }
+    .badge-price-1cr { background:rgba(148,163,184,0.08); color:#94a3b8; border:1px solid rgba(148,163,184,0.2); }
+    .badge-price-10l { background:var(--muted-bg); color:var(--muted); border:1px solid var(--border); }
 
     .table-wrap { background:var(--surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
     .empty-state { text-align:center; padding:60px 24px; color:var(--muted); font-size:0.85rem; }
+
+    /* Price group separator rows */
+    .price-group-row td {
+      padding:7px 14px; font-size:0.65rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:0.1em; background:var(--muted-bg); border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border); color:var(--muted); pointer-events:none;
+    }
+    .price-group-row.tier-5cr td { color:var(--gold); background:rgba(247,193,30,0.05); border-color:rgba(247,193,30,0.2); }
   </style>
   <script src="header.js"></script>
 </head>
@@ -128,10 +139,11 @@
             <th>Role</th>
             <th>Type</th>
             <th>Team</th>
+            <th>Base Price</th>
           </tr>
         </thead>
         <tbody id="player-tbody">
-          <tr><td colspan="5" class="empty-state">Loading…</td></tr>
+          <tr><td colspan="6" class="empty-state">Loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -168,6 +180,16 @@
       return `<span class="badge">${type}</span>`;
     }
 
+    const PRICE_ORDER = { '5 CR': 0, '1 CR': 1, '10 L': 2 };
+    const PRICE_LABELS = { '5 CR': '5 Crore', '1 CR': '1 Crore', '10 L': '10 Lakh' };
+
+    function priceBadge(price) {
+      if (price === '5 CR') return `<span class="badge badge-price-5cr">5 CR</span>`;
+      if (price === '1 CR') return `<span class="badge badge-price-1cr">1 CR</span>`;
+      if (price === '10 L') return `<span class="badge badge-price-10l">10 L</span>`;
+      return `<span class="badge">${price}</span>`;
+    }
+
     function render() {
       const q = searchQ.toLowerCase();
       const filtered = allPlayers.filter(p => {
@@ -178,24 +200,43 @@
         return true;
       });
 
+      // Sort by price tier
+      filtered.sort((a, b) => (PRICE_ORDER[a.Price] ?? 9) - (PRICE_ORDER[b.Price] ?? 9));
+
       document.getElementById('result-count').textContent =
         filtered.length === allPlayers.length ? '' : `${filtered.length} shown`;
 
       const tbody = document.getElementById('player-tbody');
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No players match your filters.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No players match your filters.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = filtered.map((p, i) => `
-        <tr>
-          <td class="num">${i + 1}</td>
-          <td style="font-weight:500;">${p.Name}</td>
-          <td>${roleBadge(p.Role)}</td>
-          <td>${typeBadge(p.Type)}</td>
-          <td><span class="badge badge-team">${p.Team}</span></td>
-        </tr>
-      `).join('');
+      let html = '';
+      let lastPrice = null;
+      let rowNum = 0;
+      filtered.forEach(p => {
+        if (p.Price !== lastPrice) {
+          const isCR5 = p.Price === '5 CR';
+          const label = PRICE_LABELS[p.Price] || p.Price;
+          const count = filtered.filter(x => x.Price === p.Price).length;
+          html += `<tr class="price-group-row${isCR5 ? ' tier-5cr' : ''}">
+            <td colspan="6">${label} &nbsp;·&nbsp; ${count} player${count !== 1 ? 's' : ''}</td>
+          </tr>`;
+          lastPrice = p.Price;
+        }
+        rowNum++;
+        html += `
+          <tr>
+            <td class="num">${rowNum}</td>
+            <td style="font-weight:500;">${p.Name}</td>
+            <td>${roleBadge(p.Role)}</td>
+            <td>${typeBadge(p.Type)}</td>
+            <td><span class="badge badge-team">${p.Team}</span></td>
+            <td>${priceBadge(p.Price)}</td>
+          </tr>`;
+      });
+      tbody.innerHTML = html;
     }
 
     // ── Filters ───────────────────────────────────────────────────────────
