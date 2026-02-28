@@ -140,9 +140,10 @@
           </div>
           <nav style="display:flex;gap:28px;">
             ${nav('index.html', 'Teams')}
-            ${nav('auction.html', 'Auction')}
+            ${nav('auction.html', 'Live Auction')}
             ${nav('players.html', 'Players')}
             ${nav('rules.html', 'League Rules')}
+            ${nav('admin.html', 'Admin')}
           </nav>
         </div>
       </header>

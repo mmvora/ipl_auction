@@ -3,38 +3,302 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IPL Fantasy League 2026 — Auction</title>
+  <title>IPL Fantasy League 2026 — Live Auction</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    .coming-card {
-      background:var(--surface); border:1px solid var(--border);
-      border-top:3px solid var(--gold);
-      border-radius:10px; padding:80px 48px; text-align:center; max-width:480px; margin:0 auto;
-      box-shadow:0 0 40px rgba(247,193,30,0.06);
-    }
-    .icon-wrap {
-      width:64px; height:64px; border-radius:50%;
-      background:var(--muted-bg); border:1px solid var(--gold);
-      display:flex; align-items:center; justify-content:center;
-      margin:0 auto 24px; font-size:28px;
-      box-shadow:0 0 16px rgba(247,193,30,0.25);
-    }
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .card-gold{border-top:3px solid var(--gold)}
+
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:4px;font-size:0.72rem;font-weight:600;white-space:nowrap}
+    .badge-batter{background:#1a2e1a;color:#4ade80;border:1px solid #166534}
+    .badge-bowler{background:#1e1a2e;color:#a78bfa;border:1px solid #4c1d95}
+    .badge-allrounder{background:#2e1a1a;color:#f87171;border:1px solid #7f1d1d}
+    .badge-keeper{background:#1a2330;color:#60a5fa;border:1px solid #1e3a5f}
+    .badge-indian{background:#1f1a00;color:#fbbf24;border:1px solid #78350f}
+    .badge-overseas{background:#001f1f;color:#2dd4bf;border:1px solid #134e4a}
+    .badge-team{background:var(--muted-bg);color:var(--muted);border:1px solid var(--border)}
+
+    .player-card{padding:40px 32px;text-align:center}
+    .player-name{font-size:2rem;font-weight:900;margin:0 0 8px}
+    .player-meta{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+
+    .bid-amount{font-size:3.5rem;font-weight:900;color:var(--gold);line-height:1;margin:8px 0}
+    .bid-label{font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)}
+    .bidder-name{font-size:1.15rem;font-weight:700;margin-top:8px}
+
+    .banner{padding:18px 24px;text-align:center;font-weight:800;font-size:1.2rem;letter-spacing:0.05em}
+    .banner-sold{background:linear-gradient(135deg,#166534,#14532d);color:#4ade80;border:1px solid #22c55e33}
+    .banner-unsold{background:linear-gradient(135deg,#7f1d1d,#450a0a);color:#f87171;border:1px solid #ef444433}
+    .banner-live{background:linear-gradient(135deg,#78350f,#451a03);color:var(--gold);border:1px solid rgba(247,193,30,0.3)}
+
+    .idle-wrap{text-align:center;padding:80px 24px}
+    .idle-icon{width:72px;height:72px;border-radius:50%;background:var(--muted-bg);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:32px;box-shadow:0 0 20px rgba(247,193,30,0.25)}
+
+    .squad-card{padding:14px 16px}
+    .squad-card h3{font-size:0.78rem;font-weight:700;margin:0 0 10px;display:flex;align-items:center;gap:6px}
+    .squad-player{display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:0.78rem;border-bottom:1px solid var(--border)}
+    .squad-player:last-child{border-bottom:none}
+    .squad-player .sp-name{font-weight:500}
+    .squad-player .sp-price{color:var(--gold);font-weight:600}
+
+    .history-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:0.78rem;border-bottom:1px solid var(--border)}
+    .history-item:last-child{border-bottom:none}
+
+    @keyframes sold-pop{0%{transform:scale(0.9);opacity:0}50%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+    .sold-anim{animation:sold-pop 0.4s ease-out}
+    @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(247,193,30,0.5)}100%{box-shadow:0 0 0 14px rgba(247,193,30,0)}}
+    .pulse{animation:pulse-ring 1.2s infinite}
+
+    .hidden{display:none!important}
   </style>
   <script src="header.js"></script>
 </head>
 <body>
 
-  <main style="max-width:1024px;margin:0 auto;padding:64px 24px;">
-    <div class="coming-card">
-      <div class="icon-wrap">🔨</div>
-      <h2 style="font-size:1.15rem;font-weight:700;margin:0 0 6px;">Auction View</h2>
-      <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin:0 0 14px;">Coming Soon</p>
-      <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin:0;">
-        The live auction room opens on auction day. Watch bids in real time, track team spending, and see squads come together.
-      </p>
+  <main style="max-width:1200px;margin:0 auto;padding:24px 16px;">
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start;" id="main-grid">
+
+      <!-- LEFT: Live Auction View -->
+      <div>
+        <!-- Idle -->
+        <div id="state-idle" class="card card-gold">
+          <div class="idle-wrap">
+            <div class="idle-icon">🔨</div>
+            <h2 style="font-size:1.25rem;font-weight:700;margin:0 0 6px;">Waiting for next player…</h2>
+            <p style="font-size:0.85rem;color:var(--muted);margin:0;">The auctioneer will nominate a player shortly.</p>
+          </div>
+        </div>
+
+        <!-- Nominating / Bidding -->
+        <div id="state-active" class="hidden">
+          <div class="card" style="border-top:3px solid var(--gold);">
+            <div class="banner banner-live" id="live-banner">🔴 LIVE — BIDDING</div>
+            <div class="player-card">
+              <div class="player-meta" id="p-meta"></div>
+              <div class="player-name" id="p-name"></div>
+              <div class="bid-label" id="bid-label">BASE PRICE</div>
+              <div class="bid-amount pulse" id="bid-amount"></div>
+              <div id="bidder-wrap" class="hidden">
+                <div class="bid-label">HIGHEST BIDDER</div>
+                <div class="bidder-name" id="bidder-name"></div>
+              </div>
+            </div>
+            <!-- Bid history -->
+            <div style="padding:0 24px 20px;" id="history-wrap" class="hidden">
+              <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:8px;">Bid History</div>
+              <div id="bid-history"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sold -->
+        <div id="state-sold" class="hidden">
+          <div class="card sold-anim" style="border-top:3px solid #22c55e;">
+            <div class="banner banner-sold">SOLD!</div>
+            <div class="player-card">
+              <div class="player-meta" id="sold-meta"></div>
+              <div class="player-name" id="sold-name"></div>
+              <div class="bid-amount" style="color:#4ade80;" id="sold-price"></div>
+              <div class="bidder-name" id="sold-to"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unsold -->
+        <div id="state-unsold" class="hidden">
+          <div class="card sold-anim" style="border-top:3px solid #ef4444;">
+            <div class="banner banner-unsold">UNSOLD</div>
+            <div class="player-card">
+              <div class="player-meta" id="unsold-meta"></div>
+              <div class="player-name" id="unsold-name"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats bar -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+          <div class="card" style="flex:1;min-width:120px;padding:14px 16px;text-align:center;">
+            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:4px;">Remaining</div>
+            <div style="font-size:1.2rem;font-weight:800;color:var(--fg);" id="stat-remaining">0</div>
+          </div>
+          <div class="card" style="flex:1;min-width:120px;padding:14px 16px;text-align:center;">
+            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:4px;">Sold</div>
+            <div style="font-size:1.2rem;font-weight:800;color:#4ade80;" id="stat-sold">0</div>
+          </div>
+          <div class="card" style="flex:1;min-width:120px;padding:14px 16px;text-align:center;">
+            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:4px;">Unsold</div>
+            <div style="font-size:1.2rem;font-weight:800;color:#f87171;" id="stat-unsold">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Teams sidebar -->
+      <div style="display:flex;flex-direction:column;gap:10px;" id="teams-sidebar"></div>
     </div>
   </main>
 
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js';
+    import { getDatabase, ref, onValue }
+      from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyB6icjFuutJqV3G2alfBrd2rJUmwghJxns",
+      authDomain: "iplfantasy-952c4.firebaseapp.com",
+      projectId: "iplfantasy-952c4",
+      storageBucket: "iplfantasy-952c4.firebasestorage.app",
+      messagingSenderId: "50120567665",
+      appId: "1:50120567665:web:99123e475943cd71e3a4d0",
+      databaseURL: "https://iplfantasy-952c4-default-rtdb.firebaseio.com"
+    });
+    const db = getDatabase(app);
+
+    const TOTAL_PLAYERS = 249;
+
+    const FTMS = [
+      { k:'Heet',     n:'Heet Hurricanes',    c:'#0EA5E9', e:'🌀' },
+      { k:'Divij',    n:'Divij Dragons',      c:'#DC2626', e:'🐉' },
+      { k:'Vrushank', n:'Vrushank Vikings',   c:'#7C3AED', e:'⚔️' },
+      { k:'Shrey',    n:'Shrey Strikers',     c:'#F59E0B', e:'⚡' },
+      { k:'Malhaar',  n:'Malhaar Monarchs',   c:'#D97706', e:'👑' },
+      { k:'Shivansh', n:'Shivansh Sharks',    c:'#0F766E', e:'🦈' },
+      { k:'Dev',      n:'Dev Dynamos',        c:'#EA580C', e:'💥' },
+      { k:'Sai',      n:'Sai Supernovas',     c:'#9333EA', e:'🌟' },
+      { k:'Moksh',    n:'Moksh Mavericks',    c:'#16A34A', e:'🤠' },
+      { k:'Darshan',  n:'Darshan Daredevils', c:'#BE123C', e:'😈' },
+      { k:'Rishab',   n:'Rishab Risers',      c:'#0369A1', e:'🚀' },
+      { k:'Div',      n:'Div Dominators',     c:'#4D7C0F', e:'👊' },
+      { k:'Mir',      n:'Mirs Magicians',     c:'#BE185D', e:'🪄' },
+    ];
+    const FT_MAP = {};
+    FTMS.forEach(t => FT_MAP[t.k] = t);
+
+    function fmtL(lakhs) {
+      if (lakhs >= 100) {
+        const cr = lakhs / 100;
+        return (cr % 1 === 0 ? cr : cr.toFixed(1)) + ' CR';
+      }
+      return lakhs + ' L';
+    }
+
+    function roleBadgeClass(r) {
+      if (r === 'Batter') return 'badge-batter';
+      if (r === 'Bowler') return 'badge-bowler';
+      if (r === 'All-rounder') return 'badge-allrounder';
+      if (r === 'Wicketkeeper') return 'badge-keeper';
+      return '';
+    }
+
+    function makeMetaHTML(p) {
+      if (!p) return '';
+      return `
+        <span class="badge ${roleBadgeClass(p.role)}">${p.role}</span>
+        <span class="badge badge-team">${p.iplTeam}</span>
+        <span class="badge ${p.type === 'Indian' ? 'badge-indian' : 'badge-overseas'}">${p.type}</span>
+      `;
+    }
+
+    let aState = {}, tData = {}, soldD = {}, unsoldD = {};
+
+    onValue(ref(db, 'auction'), snap => { aState = snap.val() || {}; render(); });
+    onValue(ref(db, 'teams'),   snap => { tData  = snap.val() || {}; renderTeams(); render(); });
+    onValue(ref(db, 'sold'),    snap => { soldD  = snap.val() || {}; updateStats(); });
+    onValue(ref(db, 'unsold'),  snap => { unsoldD= snap.val() || {}; updateStats(); });
+
+    function showOnly(id) {
+      ['state-idle','state-active','state-sold','state-unsold'].forEach(s =>
+        document.getElementById(s).classList.toggle('hidden', s !== id));
+    }
+
+    function render() {
+      const st = aState.status || 'idle';
+
+      if (st === 'idle') { showOnly('state-idle'); return; }
+
+      const p = aState.currentPlayer;
+
+      if (st === 'nominating' || st === 'bidding') {
+        showOnly('state-active');
+        document.getElementById('p-name').textContent = p?.name || '';
+        document.getElementById('p-meta').innerHTML = makeMetaHTML(p);
+        document.getElementById('bid-amount').textContent = fmtL(aState.currentBid || 0);
+        document.getElementById('live-banner').textContent = st === 'nominating' ? '🟡 NOMINATED — AWAITING BIDS' : '🔴 LIVE — BIDDING';
+
+        if (aState.currentBidder && FT_MAP[aState.currentBidder]) {
+          document.getElementById('bid-label').textContent = 'CURRENT BID';
+          document.getElementById('bidder-wrap').classList.remove('hidden');
+          const ft = FT_MAP[aState.currentBidder];
+          document.getElementById('bidder-name').innerHTML = `<span style="color:${ft.c}">${ft.e} ${ft.n}</span>`;
+        } else {
+          document.getElementById('bid-label').textContent = 'BASE PRICE';
+          document.getElementById('bidder-wrap').classList.add('hidden');
+        }
+
+        renderHistory();
+        return;
+      }
+
+      if (st === 'sold') {
+        showOnly('state-sold');
+        document.getElementById('sold-name').textContent = p?.name || '';
+        document.getElementById('sold-meta').innerHTML = makeMetaHTML(p);
+        document.getElementById('sold-price').textContent = fmtL(aState.currentBid || 0);
+        if (aState.currentBidder && FT_MAP[aState.currentBidder]) {
+          const ft = FT_MAP[aState.currentBidder];
+          document.getElementById('sold-to').innerHTML = `<span style="color:${ft.c}">${ft.e} ${ft.n}</span>`;
+        }
+        return;
+      }
+
+      if (st === 'unsold') {
+        showOnly('state-unsold');
+        document.getElementById('unsold-name').textContent = p?.name || '';
+        document.getElementById('unsold-meta').innerHTML = makeMetaHTML(p);
+        return;
+      }
+    }
+
+    function renderHistory() {
+      const wrap = document.getElementById('history-wrap');
+      const cont = document.getElementById('bid-history');
+      const bh = aState.bidHistory;
+      if (!bh) { wrap.classList.add('hidden'); return; }
+      const entries = Object.entries(bh).sort((a, b) => (b[1].ts || 0) - (a[1].ts || 0));
+      if (entries.length === 0) { wrap.classList.add('hidden'); return; }
+      wrap.classList.remove('hidden');
+      cont.innerHTML = entries.map(([, v]) => {
+        const ft = FT_MAP[v.team];
+        return `<div class="history-item">
+          <span style="background:${ft?.c||'#666'};width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+          <span style="font-weight:600;color:${ft?.c||'var(--fg)'}">${ft?.e||''} ${v.team}</span>
+          <span style="margin-left:auto;color:var(--gold);font-weight:700;">${fmtL(v.amount)}</span>
+        </div>`;
+      }).join('');
+    }
+
+    function renderTeams() {
+      document.getElementById('teams-sidebar').innerHTML = FTMS.map(ft => {
+        const td = tData[ft.k] || {};
+        const budget = td.budgetLakhs ?? 10000;
+        const squad = td.squad ? Object.values(td.squad) : [];
+        const squadHTML = squad.length > 0
+          ? squad.map(s => `<div class="squad-player"><span class="sp-name">${s.name}</span><span class="sp-price">${fmtL(s.priceLakhs)}</span></div>`).join('')
+          : `<div style="font-size:0.72rem;color:var(--muted);padding:4px 0;">No players yet</div>`;
+        return `<div class="card squad-card" style="border-left:3px solid ${ft.c};">
+          <h3><span>${ft.e}</span><span style="color:${ft.c}">${ft.n}</span>
+          <span style="margin-left:auto;font-size:0.7rem;color:var(--gold);font-weight:700">${fmtL(budget)}</span></h3>
+          <div style="font-size:0.68rem;color:var(--muted);margin-bottom:8px;">${squad.length}/11 players</div>
+          ${squadHTML}</div>`;
+      }).join('');
+    }
+
+    function updateStats() {
+      const sc = Object.keys(soldD).length, uc = Object.keys(unsoldD).length;
+      document.getElementById('stat-remaining').textContent = TOTAL_PLAYERS - sc - uc;
+      document.getElementById('stat-sold').textContent = sc;
+      document.getElementById('stat-unsold').textContent = uc;
+    }
+  </script>
 </body>
 </html>

@@ -7,149 +7,139 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* Stats row */
     .stat-pill { background: var(--muted-bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-size: 0.75rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
     .stat-pill strong { color: var(--fg); font-weight: 600; font-size: 0.875rem; }
-
-    /* Table */
-    .data-table { width: 100%; border-collapse: collapse; }
-    .data-table thead tr { border-bottom: 1px solid var(--border); }
-    .data-table thead th { padding: 10px 16px; text-align: left; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-    .data-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-    .data-table tbody tr:last-child { border-bottom: none; }
-    .data-table tbody tr:hover { background: var(--muted-bg); }
-    .data-table tbody td { padding: 13px 16px; font-size: 0.875rem; color: var(--fg); vertical-align: middle; }
-
-    /* Team colour dot */
-    .team-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
-    /* Badges */
-    .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 4px; }
-    .badge-paid   { background: rgba(34,197,94,0.1);  color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
-    .badge-unpaid { background: rgba(239,68,68,0.08); color: #f87171; border: 1px solid rgba(239,68,68,0.18); }
-
-    /* Card wrapper */
     .card { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--gold); border-radius: 10px; overflow: hidden; box-shadow: 0 0 40px rgba(247,193,30,0.05); }
 
+    .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.15s; }
+    .team-card:hover { border-color: var(--gold); }
+    .team-header { padding: 16px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
+    .team-emoji { font-size: 1.4rem; line-height: 1; }
+    .team-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .team-name { font-weight: 700; font-size: 0.92rem; }
+    .team-owner { font-size: 0.75rem; color: var(--muted); }
+    .team-budget { margin-left: auto; text-align: right; }
+    .team-budget .amt { font-size: 1rem; font-weight: 800; color: var(--gold); }
+    .team-budget .lbl { font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+    .team-body { padding: 12px 20px; }
+    .squad-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 0.8rem; border-bottom: 1px solid var(--border); }
+    .squad-row:last-child { border-bottom: none; }
+    .sq-name { font-weight: 500; }
+    .sq-role { font-size: 0.68rem; color: var(--muted); }
+    .sq-price { color: var(--gold); font-weight: 700; font-size: 0.78rem; }
+    .empty-squad { font-size: 0.78rem; color: var(--muted); padding: 8px 0; }
+    .squad-count { font-size: 0.68rem; color: var(--muted); padding: 0 20px 12px; }
   </style>
   <script src="header.js"></script>
 </head>
 <body>
 
-  <main style="max-width:1024px; margin:0 auto; padding:36px 24px;">
-
-    <!-- Page heading + stats -->
+  <main style="max-width:1100px; margin:0 auto; padding:36px 24px;">
     <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:24px;">
       <div>
         <h1 style="font-size:1.25rem; font-weight:700; color:var(--fg); margin:0 0 2px;">Teams</h1>
-        <p style="font-size:0.8rem; color:var(--muted); margin:0;">All registered teams for the 2026 season</p>
+        <p style="font-size:0.8rem; color:var(--muted); margin:0;">All 13 fantasy teams · Live budget & squads</p>
       </div>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <div class="stat-pill"><strong id="stat-total">0</strong> total</div>
-        <div class="stat-pill" style="color:#4ade80;"><strong id="stat-paid" style="color:#4ade80;">0</strong> paid</div>
-        <div class="stat-pill" style="color:#f87171;"><strong id="stat-unpaid" style="color:#f87171;">0</strong> pending</div>
+        <div class="stat-pill"><strong id="stat-total">13</strong> teams</div>
+        <div class="stat-pill" style="color:#4ade80;"><strong id="stat-sold" style="color:#4ade80;">0</strong> sold</div>
+        <div class="stat-pill" style="color:var(--gold);"><strong id="stat-spent" style="color:var(--gold);">0 CR</strong> spent</div>
       </div>
     </div>
 
-    <!-- Table card -->
-    <div class="card">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th style="width:40%;">Team</th>
-            <th style="width:35%;">Owner</th>
-            <th style="width:25%; text-align:right;">Fee Status</th>
-          </tr>
-        </thead>
-        <tbody id="teams-tbody">
-          <!-- populated by JS -->
-        </tbody>
-      </table>
-      <div id="empty-state" class="hidden" style="text-align:center; padding:60px 24px; color:var(--muted); font-size:0.875rem;">
-        No teams registered yet.
-      </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;" id="teams-grid">
+      <div style="text-align:center;padding:60px;color:var(--muted);grid-column:1/-1;">Loading teams…</div>
     </div>
-
-    <!-- Payment instructions -->
-    <div style="margin-top:24px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:20px 24px;">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
-        <span style="font-size:1rem;">💰</span>
-        <span style="font-size:0.8rem; font-weight:700; color:var(--fg);">Confirm Your Spot</span>
-        <span style="margin-left:auto; font-size:0.7rem; font-weight:600; background:rgba(247,192,26,0.1); color:var(--gold); border:1px solid rgba(247,192,26,0.25); border-radius:4px; padding:2px 8px;">$200 Entry Fee</span>
-      </div>
-      <p style="font-size:0.8rem; color:var(--muted); margin:0 0 16px; line-height:1.6;">
-        Pay <strong style="color:var(--fg);">$200 HKD</strong> to Malhaar via PayMe or FPS to lock in your team before the auction. Your fee status above will be updated once payment is confirmed.
-      </p>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <div style="flex:1; min-width:180px; background:var(--muted-bg); border:1px solid var(--border); border-radius:8px; padding:14px 16px;">
-          <div style="font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;">PayMe</div>
-          <div style="font-size:0.9rem; font-weight:700; color:var(--fg);">@Malhaar</div>
-          <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;">Search by name / phone</div>
-        </div>
-        <div style="flex:1; min-width:180px; background:var(--muted-bg); border:1px solid var(--border); border-radius:8px; padding:14px 16px;">
-          <div style="font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;">FPS</div>
-          <div style="font-size:0.9rem; font-weight:700; color:var(--fg);">Malhaar</div>
-          <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;">Use registered phone / ID</div>
-        </div>
-      </div>
-      <p style="font-size:0.72rem; color:var(--muted); margin:12px 0 0; line-height:1.5;">
-        After paying, drop a message in the group so Malhaar can mark you as paid.
-      </p>
-    </div>
-
   </main>
 
-  <script>
-    const teams = [
-      { name: "Heet Hurricanes",      owner: "Heet",     feesPaid: true, color: "#0EA5E9", logo: "🌀" },
-      { name: "Divij Dragons",        owner: "Divij",    feesPaid: true, color: "#DC2626", logo: "🐉" },
-      { name: "Vrushank Vikings",     owner: "Vrushank", feesPaid: true, color: "#7C3AED", logo: "⚔️" },
-      { name: "Shrey Strikers",       owner: "Shrey",    feesPaid: true, color: "#F59E0B", logo: "⚡" },
-      { name: "Malhaar Monarchs",     owner: "Malhaar",  feesPaid: true,  color: "#B45309", logo: "👑" },
-      { name: "Shivansh Sharks",      owner: "Shivansh", feesPaid: true, color: "#0F766E", logo: "🦈" },
-      { name: "Dev Dynamos",          owner: "Dev",      feesPaid: true, color: "#EA580C", logo: "💥" },
-      { name: "Sai Supernovas",       owner: "Sai",      feesPaid: true, color: "#9333EA", logo: "🌟" },
-      { name: "Moksh Mavericks",      owner: "Moksh",    feesPaid: true, color: "#16A34A", logo: "🤠" },
-      { name: "Darshan Daredevils",   owner: "Darshan",  feesPaid: true, color: "#BE123C", logo: "😈" },
-      { name: "Rishab Risers",        owner: "Rishab",   feesPaid: true, color: "#0369A1", logo: "🚀" },
-      { name: "Div Dominators",       owner: "Div",      feesPaid: true, color: "#4D7C0F", logo: "👊" },
-      { name: "Mirs Magicians",       owner: "Mir",      feesPaid: true, color: "#BE185D", logo: "🪄" },
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js';
+    import { getDatabase, ref, onValue }
+      from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyB6icjFuutJqV3G2alfBrd2rJUmwghJxns",
+      authDomain: "iplfantasy-952c4.firebaseapp.com",
+      projectId: "iplfantasy-952c4",
+      storageBucket: "iplfantasy-952c4.firebasestorage.app",
+      messagingSenderId: "50120567665",
+      appId: "1:50120567665:web:99123e475943cd71e3a4d0",
+      databaseURL: "https://iplfantasy-952c4-default-rtdb.firebaseio.com"
+    });
+    const db = getDatabase(app);
+
+    const FTMS = [
+      { k:'Heet',     n:'Heet Hurricanes',    c:'#0EA5E9', e:'🌀' },
+      { k:'Divij',    n:'Divij Dragons',      c:'#DC2626', e:'🐉' },
+      { k:'Vrushank', n:'Vrushank Vikings',   c:'#7C3AED', e:'⚔️' },
+      { k:'Shrey',    n:'Shrey Strikers',     c:'#F59E0B', e:'⚡' },
+      { k:'Malhaar',  n:'Malhaar Monarchs',   c:'#D97706', e:'👑' },
+      { k:'Shivansh', n:'Shivansh Sharks',    c:'#0F766E', e:'🦈' },
+      { k:'Dev',      n:'Dev Dynamos',        c:'#EA580C', e:'💥' },
+      { k:'Sai',      n:'Sai Supernovas',     c:'#9333EA', e:'🌟' },
+      { k:'Moksh',    n:'Moksh Mavericks',    c:'#16A34A', e:'🤠' },
+      { k:'Darshan',  n:'Darshan Daredevils', c:'#BE123C', e:'😈' },
+      { k:'Rishab',   n:'Rishab Risers',      c:'#0369A1', e:'🚀' },
+      { k:'Div',      n:'Div Dominators',     c:'#4D7C0F', e:'👊' },
+      { k:'Mir',      n:'Mirs Magicians',     c:'#BE185D', e:'🪄' },
     ];
 
-    function render() {
-      const tbody = document.getElementById('teams-tbody');
-      const empty = document.getElementById('empty-state');
-      const count  = teams.length;
-      const paid   = teams.filter(t => t.feesPaid).length;
-
-      document.getElementById('stat-total').textContent  = count;
-      document.getElementById('stat-paid').textContent   = paid;
-      document.getElementById('stat-unpaid').textContent = count - paid;
-
-      if (count === 0) { empty.classList.remove('hidden'); return; }
-
-      tbody.innerHTML = teams.map(t => `
-        <tr>
-          <td>
-            <div style="display:flex; align-items:center; gap:10px;">
-              <span style="font-size:1.1rem; line-height:1;">${t.logo}</span>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <div class="team-dot" style="background:${t.color};"></div>
-                <span style="font-weight:500;">${t.name}</span>
-              </div>
-            </div>
-          </td>
-          <td style="color:var(--muted);">${t.owner}</td>
-          <td style="text-align:right;">
-            <span class="badge ${t.feesPaid ? 'badge-paid' : 'badge-unpaid'}">
-              ${t.feesPaid ? '✓ Paid' : 'Pending'}
-            </span>
-          </td>
-        </tr>
-      `).join('');
+    function fmtL(lakhs) {
+      if (lakhs >= 100) {
+        const cr = lakhs / 100;
+        return (cr % 1 === 0 ? cr : cr.toFixed(1)) + ' CR';
+      }
+      return lakhs + ' L';
     }
 
-    render();
+    let tData = {};
+
+    onValue(ref(db, 'teams'), snap => {
+      tData = snap.val() || {};
+      render();
+    });
+
+    onValue(ref(db, 'sold'), snap => {
+      const soldD = snap.val() || {};
+      document.getElementById('stat-sold').textContent = Object.keys(soldD).length;
+      let totalSpent = 0;
+      Object.values(soldD).forEach(s => { totalSpent += s.priceLakhs || 0; });
+      document.getElementById('stat-spent').textContent = fmtL(totalSpent);
+    });
+
+    function render() {
+      const grid = document.getElementById('teams-grid');
+
+      grid.innerHTML = FTMS.map(ft => {
+        const td = tData[ft.k] || {};
+        const budget = td.budgetLakhs ?? 10000;
+        const squad = td.squad ? Object.values(td.squad) : [];
+        const spent = 10000 - budget;
+
+        const squadHTML = squad.length > 0
+          ? squad.map(s => `<div class="squad-row">
+              <div><span class="sq-name">${s.name}</span> <span class="sq-role">· ${s.role}</span></div>
+              <span class="sq-price">${fmtL(s.priceLakhs)}</span>
+            </div>`).join('')
+          : '<div class="empty-squad">No players yet</div>';
+
+        return `<div class="team-card" style="border-left:3px solid ${ft.c};">
+          <div class="team-header">
+            <span class="team-emoji">${ft.e}</span>
+            <div>
+              <div class="team-name" style="color:${ft.c}">${ft.n}</div>
+              <div class="team-owner">${ft.k}</div>
+            </div>
+            <div class="team-budget">
+              <div class="amt">${fmtL(budget)}</div>
+              <div class="lbl">Purse left</div>
+            </div>
+          </div>
+          <div class="squad-count">${squad.length}/11 players · ${fmtL(spent)} spent</div>
+          <div class="team-body">${squadHTML}</div>
+        </div>`;
+      }).join('');
+    }
   </script>
 </body>
 </html>

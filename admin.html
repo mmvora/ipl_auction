@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPL Fantasy League 2026 — Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .card-gold{border-top:3px solid var(--gold)}
+
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:4px;font-size:0.72rem;font-weight:600;white-space:nowrap}
+    .badge-batter{background:#1a2e1a;color:#4ade80;border:1px solid #166534}
+    .badge-bowler{background:#1e1a2e;color:#a78bfa;border:1px solid #4c1d95}
+    .badge-allrounder{background:#2e1a1a;color:#f87171;border:1px solid #7f1d1d}
+    .badge-keeper{background:#1a2330;color:#60a5fa;border:1px solid #1e3a5f}
+    .badge-indian{background:#1f1a00;color:#fbbf24;border:1px solid #78350f}
+    .badge-overseas{background:#001f1f;color:#2dd4bf;border:1px solid #134e4a}
+    .badge-team{background:var(--muted-bg);color:var(--muted);border:1px solid var(--border)}
+
+    .player-card{padding:24px;text-align:center}
+    .player-name{font-size:1.4rem;font-weight:800;margin:0 0 6px}
+    .player-meta{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .bid-amount{font-size:2.4rem;font-weight:900;color:var(--gold);line-height:1;margin:6px 0}
+    .bid-label{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+    .bidder-name{font-size:1rem;font-weight:700;margin-top:6px}
+
+    .banner{padding:14px 24px;text-align:center;font-weight:800;font-size:1rem;letter-spacing:0.04em}
+    .banner-sold{background:linear-gradient(135deg,#166534,#14532d);color:#4ade80}
+    .banner-unsold{background:linear-gradient(135deg,#7f1d1d,#450a0a);color:#f87171}
+
+    /* Team bid buttons */
+    .team-btn{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--muted-bg);cursor:pointer;transition:all .15s;font-size:0.82rem;font-weight:600;color:var(--fg);width:100%}
+    .team-btn:hover:not(:disabled){border-color:var(--gold);background:rgba(247,193,30,0.06)}
+    .team-btn:disabled{opacity:0.3;cursor:not-allowed}
+    .team-btn .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .team-btn.active-bidder{border-color:var(--gold);background:rgba(247,193,30,0.12);box-shadow:0 0 12px rgba(247,193,30,0.15)}
+    .team-btn .info{margin-left:auto;font-size:0.68rem;color:var(--muted);font-weight:500}
+
+    .act-btn{padding:10px 22px;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;border:none;transition:all .12s}
+    .act-btn:hover{filter:brightness(1.12)}
+    .act-btn:disabled{opacity:0.35;cursor:not-allowed}
+    .btn-sell{background:#16a34a;color:#fff}
+    .btn-unsold{background:#dc2626;color:#fff}
+    .btn-undo{background:var(--muted-bg);color:var(--muted);border:1px solid var(--border)}
+    .btn-next{background:var(--gold);color:#07111e}
+    .btn-nominate{background:var(--gold);color:#07111e}
+    .btn-init{background:var(--muted-bg);color:var(--muted);border:1px solid var(--border)}
+
+    /* Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
+    .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;width:100%;max-width:700px;max-height:85vh;display:flex;flex-direction:column}
+    .modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .modal-body{padding:16px 24px;overflow-y:auto;flex:1}
+    .modal-close{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;padding:4px 8px}
+    .modal-close:hover{color:var(--fg)}
+    .picker-search{background:var(--muted-bg);border:1px solid var(--border);color:var(--fg);border-radius:7px;padding:8px 12px;font-size:0.85rem;outline:none;width:100%;margin-bottom:12px}
+    .picker-search::placeholder{color:var(--muted)}
+    .picker-search:focus{border-color:var(--gold)}
+    .picker-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:6px;transition:background .1s}
+    .picker-row:hover{background:var(--muted-bg)}
+    .picker-row .pname{font-weight:600;font-size:0.88rem}
+    .picker-row .pmeta{font-size:0.72rem;color:var(--muted)}
+    .picker-group{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);padding:8px 12px;background:rgba(247,193,30,0.05);border-radius:4px;margin:8px 0 4px}
+
+    .history-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:0.76rem;border-bottom:1px solid var(--border)}
+    .history-item:last-child{border-bottom:none}
+
+    .lock-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px}
+    .lock-screen input{background:var(--muted-bg);border:1px solid var(--border);color:var(--fg);border-radius:8px;padding:12px 16px;font-size:1rem;outline:none;width:240px;text-align:center}
+    .lock-screen input:focus{border-color:var(--gold)}
+
+    @keyframes sold-pop{0%{transform:scale(0.9);opacity:0}50%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+    .sold-anim{animation:sold-pop 0.4s ease-out}
+
+    .hidden{display:none!important}
+  </style>
+  <script src="header.js"></script>
+</head>
+<body>
+
+  <!-- Lock screen -->
+  <div id="lock-screen" class="lock-screen">
+    <div style="width:64px;height:64px;border-radius:50%;background:var(--muted-bg);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 0 16px rgba(247,193,30,0.25);">🔒</div>
+    <h2 style="font-size:1.1rem;font-weight:700;margin:0;">Admin Panel</h2>
+    <p style="font-size:0.82rem;color:var(--muted);margin:0;">Enter password to access auctioneer controls</p>
+    <input type="password" id="admin-pw" placeholder="Password…" />
+    <button class="act-btn btn-nominate" id="admin-login-btn" style="width:240px;">Unlock</button>
+    <span id="admin-err" style="font-size:0.78rem;color:#f87171;"></span>
+  </div>
+
+  <!-- Main admin UI (hidden until auth) -->
+  <main id="admin-main" class="hidden" style="max-width:1100px;margin:0 auto;padding:24px 16px;">
+
+    <!-- Top bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <h1 style="font-size:1.1rem;font-weight:800;margin:0 0 2px;">Auctioneer Console</h1>
+        <p style="font-size:0.75rem;color:var(--muted);margin:0;">
+          Remaining: <strong id="stat-rem" style="color:var(--fg)">0</strong> &nbsp;·&nbsp;
+          Sold: <strong id="stat-sold" style="color:#4ade80">0</strong> &nbsp;·&nbsp;
+          Unsold: <strong id="stat-unsold" style="color:#f87171">0</strong>
+        </p>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="act-btn btn-init" onclick="initAuction()">Reset Auction</button>
+        <button class="act-btn btn-undo" onclick="lockAdmin()">🔒 Lock</button>
+      </div>
+    </div>
+
+    <!-- State: Idle -->
+    <div id="s-idle" class="card card-gold" style="text-align:center;padding:48px 24px;">
+      <div style="font-size:2rem;margin-bottom:12px;">🔨</div>
+      <h2 style="font-size:1.1rem;font-weight:700;margin:0 0 8px;">Ready for next player</h2>
+      <button class="act-btn btn-nominate" onclick="openPicker()" style="margin-top:12px;">Nominate Player</button>
+    </div>
+
+    <!-- State: Nominating / Bidding -->
+    <div id="s-active" class="hidden">
+      <div class="card card-gold">
+        <div class="player-card" style="padding-bottom:12px;">
+          <div class="player-meta" id="a-meta"></div>
+          <div class="player-name" id="a-name"></div>
+          <div class="bid-label" id="a-bid-label">BASE PRICE</div>
+          <div class="bid-amount" id="a-bid-amount"></div>
+          <div id="a-bidder-wrap" class="hidden">
+            <div class="bid-label">HIGHEST BIDDER</div>
+            <div class="bidder-name" id="a-bidder-name"></div>
+          </div>
+        </div>
+
+        <!-- Team buttons -->
+        <div style="padding:0 20px 16px;">
+          <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:8px;">Place bid for team</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;" id="team-btns"></div>
+        </div>
+
+        <!-- Action buttons -->
+        <div style="display:flex;gap:10px;justify-content:center;padding:0 20px 20px;flex-wrap:wrap;">
+          <button class="act-btn btn-undo" id="btn-undo" onclick="undoLastBid()" disabled>Undo Last Bid</button>
+          <button class="act-btn btn-unsold" onclick="markUnsold()">Unsold</button>
+          <button class="act-btn btn-sell" id="btn-sell" onclick="sellPlayer()" disabled>Sold!</button>
+        </div>
+
+        <!-- Bid history -->
+        <div style="padding:0 20px 16px;" id="a-history-wrap" class="hidden">
+          <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:6px;">Bid History</div>
+          <div id="a-bid-history"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- State: Sold -->
+    <div id="s-sold" class="hidden">
+      <div class="card sold-anim" style="border-top:3px solid #22c55e;">
+        <div class="banner banner-sold">SOLD!</div>
+        <div class="player-card">
+          <div class="player-name" id="s-sold-name"></div>
+          <div class="bid-amount" style="color:#4ade80" id="s-sold-price"></div>
+          <div class="bidder-name" id="s-sold-to"></div>
+          <div style="margin-top:20px;">
+            <button class="act-btn btn-next" onclick="nextPlayer()">Next Player →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- State: Unsold -->
+    <div id="s-unsold" class="hidden">
+      <div class="card sold-anim" style="border-top:3px solid #ef4444;">
+        <div class="banner banner-unsold">UNSOLD</div>
+        <div class="player-card">
+          <div class="player-name" id="s-unsold-name"></div>
+          <div style="margin-top:20px;">
+            <button class="act-btn btn-next" onclick="nextPlayer()">Next Player →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Player picker modal -->
+  <div class="modal-overlay hidden" id="picker-modal" onclick="if(event.target===this)closePicker()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span style="font-size:1rem;font-weight:700;">Nominate a Player</span>
+        <button class="modal-close" onclick="closePicker()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input class="picker-search" id="picker-search" type="text" placeholder="Search player…" oninput="renderPicker()">
+        <div id="picker-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js';
+    import { getDatabase, ref, onValue, set, update, push }
+      from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyB6icjFuutJqV3G2alfBrd2rJUmwghJxns",
+      authDomain: "iplfantasy-952c4.firebaseapp.com",
+      projectId: "iplfantasy-952c4",
+      storageBucket: "iplfantasy-952c4.firebasestorage.app",
+      messagingSenderId: "50120567665",
+      appId: "1:50120567665:web:99123e475943cd71e3a4d0",
+      databaseURL: "https://iplfantasy-952c4-default-rtdb.firebaseio.com"
+    });
+    const db = getDatabase(app);
+
+    const ADMIN_PW = 'ipl2026';
+    const MAX_SQUAD = 11;
+
+    const FTMS = [
+      { k:'Heet',     n:'Heet Hurricanes',    c:'#0EA5E9', e:'🌀' },
+      { k:'Divij',    n:'Divij Dragons',      c:'#DC2626', e:'🐉' },
+      { k:'Vrushank', n:'Vrushank Vikings',   c:'#7C3AED', e:'⚔️' },
+      { k:'Shrey',    n:'Shrey Strikers',     c:'#F59E0B', e:'⚡' },
+      { k:'Malhaar',  n:'Malhaar Monarchs',   c:'#D97706', e:'👑' },
+      { k:'Shivansh', n:'Shivansh Sharks',    c:'#0F766E', e:'🦈' },
+      { k:'Dev',      n:'Dev Dynamos',        c:'#EA580C', e:'💥' },
+      { k:'Sai',      n:'Sai Supernovas',     c:'#9333EA', e:'🌟' },
+      { k:'Moksh',    n:'Moksh Mavericks',    c:'#16A34A', e:'🤠' },
+      { k:'Darshan',  n:'Darshan Daredevils', c:'#BE123C', e:'😈' },
+      { k:'Rishab',   n:'Rishab Risers',      c:'#0369A1', e:'🚀' },
+      { k:'Div',      n:'Div Dominators',     c:'#4D7C0F', e:'👊' },
+      { k:'Mir',      n:'Mirs Magicians',     c:'#BE185D', e:'🪄' },
+    ];
+    const FT_MAP = {};
+    FTMS.forEach(t => FT_MAP[t.k] = t);
+
+    const PLAYERS = [
+      {N:'Ruturaj Gaikwad',R:'Batter',T:'CSK',Tp:'Indian',P:'5 CR'},
+      {N:'MS Dhoni',R:'Wicketkeeper',T:'CSK',Tp:'Indian',P:'10 L'},
+      {N:'Dewald Brevis',R:'Batter',T:'CSK',Tp:'Overseas',P:'1 CR'},
+      {N:'Ayush Mhatre',R:'Batter',T:'CSK',Tp:'Indian',P:'10 L'},
+      {N:'Urvil Patel',R:'Wicketkeeper',T:'CSK',Tp:'Indian',P:'10 L'},
+      {N:'Anshul Kamboj',R:'All-rounder',T:'CSK',Tp:'Indian',P:'10 L'},
+      {N:'Jamie Overton',R:'Bowler',T:'CSK',Tp:'Overseas',P:'10 L'},
+      {N:'Ramakrishna Ghosh',R:'All-rounder',T:'CSK',Tp:'Indian',P:'10 L'},
+      {N:'Shivam Dube',R:'All-rounder',T:'CSK',Tp:'Indian',P:'5 CR'},
+      {N:'Khaleel Ahmed',R:'Bowler',T:'CSK',Tp:'Indian',P:'1 CR'},
+      {N:'Noor Ahmad',R:'Bowler',T:'CSK',Tp:'Overseas',P:'1 CR'},
+      {N:'Mukesh Choudhary',R:'Bowler',T:'CSK',Tp:'Indian',P:'1 CR'},
+      {N:'Nathan Ellis',R:'Bowler',T:'CSK',Tp:'Overseas',P:'10 L'},
+      {N:'Shreyas Gopal',R:'Bowler',T:'CSK',Tp:'Indian',P:'10 L'},
+      {N:'Gurjapneet Singh',R:'Bowler',T:'CSK',Tp:'Indian',P:'10 L'},
+      {N:'Sanju Samson',R:'Wicketkeeper',T:'CSK',Tp:'Indian',P:'5 CR'},
+      {N:'Akeal Hosein',R:'Bowler',T:'CSK',Tp:'Overseas',P:'10 L'},
+      {N:'Prashant Veer',R:'All-rounder',T:'CSK',Tp:'Indian',P:'10 L'},
+      {N:'Kartik Sharma',R:'Wicketkeeper',T:'CSK',Tp:'Indian',P:'10 L'},
+      {N:'Matthew Short',R:'All-rounder',T:'CSK',Tp:'Overseas',P:'10 L'},
+      {N:'Aman Khan',R:'All-rounder',T:'CSK',Tp:'Indian',P:'10 L'},
+      {N:'Sarfaraz Khan',R:'Batter',T:'CSK',Tp:'Indian',P:'10 L'},
+      {N:'Rahul Chahar',R:'Bowler',T:'CSK',Tp:'Indian',P:'1 CR'},
+      {N:'Matt Henry',R:'Bowler',T:'CSK',Tp:'Overseas',P:'10 L'},
+      {N:'Zak Foulkes',R:'All-rounder',T:'CSK',Tp:'Overseas',P:'10 L'},
+      {N:'KL Rahul',R:'Wicketkeeper',T:'DC',Tp:'Indian',P:'5 CR'},
+      {N:'Karun Nair',R:'Batter',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Abishek Porel',R:'Wicketkeeper',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Tristan Stubbs',R:'Batter',T:'DC',Tp:'Overseas',P:'5 CR'},
+      {N:'Axar Patel',R:'All-rounder',T:'DC',Tp:'Indian',P:'5 CR'},
+      {N:'Sameer Rizvi',R:'Batter',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Ashutosh Sharma',R:'Batter',T:'DC',Tp:'Indian',P:'1 CR'},
+      {N:'Vipraj Nigam',R:'All-rounder',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Ajay Mandal',R:'All-rounder',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Tripurana Vijay',R:'All-rounder',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Madhav Tiwari',R:'All-rounder',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Mitchell Starc',R:'Bowler',T:'DC',Tp:'Overseas',P:'1 CR'},
+      {N:'T. Natarajan',R:'Bowler',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Mukesh Kumar',R:'Bowler',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Dushmantha Chameera',R:'Bowler',T:'DC',Tp:'Overseas',P:'10 L'},
+      {N:'Kuldeep Yadav',R:'Bowler',T:'DC',Tp:'Indian',P:'1 CR'},
+      {N:'Nitish Rana',R:'Batter',T:'DC',Tp:'Indian',P:'1 CR'},
+      {N:'Auqib Dar',R:'All-rounder',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Ben Duckett',R:'Wicketkeeper',T:'DC',Tp:'Overseas',P:'10 L'},
+      {N:'David Miller',R:'Batter',T:'DC',Tp:'Overseas',P:'1 CR'},
+      {N:'Pathum Nissanka',R:'Batter',T:'DC',Tp:'Overseas',P:'1 CR'},
+      {N:'Lungi Ngidi',R:'Bowler',T:'DC',Tp:'Overseas',P:'10 L'},
+      {N:'Sahil Parakh',R:'Batter',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Prithvi Shaw',R:'Batter',T:'DC',Tp:'Indian',P:'10 L'},
+      {N:'Kyle Jamieson',R:'Bowler',T:'DC',Tp:'Overseas',P:'10 L'},
+      {N:'Shubman Gill',R:'Batter',T:'GT',Tp:'Indian',P:'5 CR'},
+      {N:'Sai Sudharsan',R:'Batter',T:'GT',Tp:'Indian',P:'5 CR'},
+      {N:'Kumar Kushagra',R:'Wicketkeeper',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Anuj Rawat',R:'Wicketkeeper',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Jos Buttler',R:'Wicketkeeper',T:'GT',Tp:'Overseas',P:'5 CR'},
+      {N:'Nishant Sindhu',R:'All-rounder',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Glenn Phillips',R:'All-rounder',T:'GT',Tp:'Overseas',P:'1 CR'},
+      {N:'Washington Sundar',R:'All-rounder',T:'GT',Tp:'Indian',P:'1 CR'},
+      {N:'Arshad Khan',R:'Bowler',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Shahrukh Khan',R:'Batter',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Rahul Tewatia',R:'All-rounder',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Kagiso Rabada',R:'Bowler',T:'GT',Tp:'Overseas',P:'1 CR'},
+      {N:'Mohammed Siraj',R:'Bowler',T:'GT',Tp:'Indian',P:'1 CR'},
+      {N:'Prasidh Krishna',R:'Bowler',T:'GT',Tp:'Indian',P:'1 CR'},
+      {N:'Ishant Sharma',R:'Bowler',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Gurnoor Singh Brar',R:'Bowler',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Rashid Khan',R:'Bowler',T:'GT',Tp:'Overseas',P:'10 L'},
+      {N:'Manav Suthar',R:'Bowler',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Sai Kishore',R:'Bowler',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Jayant Yadav',R:'Bowler',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Ashok Sharma',R:'Bowler',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Jason Holder',R:'All-rounder',T:'GT',Tp:'Overseas',P:'10 L'},
+      {N:'Tom Banton',R:'Batter',T:'GT',Tp:'Overseas',P:'10 L'},
+      {N:'Luke Wood',R:'Bowler',T:'GT',Tp:'Overseas',P:'10 L'},
+      {N:'Prithviraj Yarra',R:'Bowler',T:'GT',Tp:'Indian',P:'10 L'},
+      {N:'Ajinkya Rahane',R:'Batter',T:'KKR',Tp:'Indian',P:'1 CR'},
+      {N:'Rinku Singh',R:'Batter',T:'KKR',Tp:'Indian',P:'1 CR'},
+      {N:'Angkrish Raghuvanshi',R:'Batter',T:'KKR',Tp:'Indian',P:'1 CR'},
+      {N:'Manish Pandey',R:'Batter',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Rovman Powell',R:'All-rounder',T:'KKR',Tp:'Overseas',P:'10 L'},
+      {N:'Anukul Roy',R:'All-rounder',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Ramandeep Singh',R:'Batter',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Vaibhav Arora',R:'Bowler',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Sunil Narine',R:'All-rounder',T:'KKR',Tp:'Overseas',P:'5 CR'},
+      {N:'Varun Chakravarthy',R:'Bowler',T:'KKR',Tp:'Indian',P:'5 CR'},
+      {N:'Harshit Rana',R:'Bowler',T:'KKR',Tp:'Indian',P:'1 CR'},
+      {N:'Umran Malik',R:'Bowler',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Cameron Green',R:'All-rounder',T:'KKR',Tp:'Overseas',P:'5 CR'},
+      {N:'Matheesha Pathirana',R:'Bowler',T:'KKR',Tp:'Overseas',P:'1 CR'},
+      {N:'Finn Allen',R:'Wicketkeeper',T:'KKR',Tp:'Overseas',P:'10 L'},
+      {N:'Tejasvi Singh',R:'Wicketkeeper',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Prashant Solanki',R:'Bowler',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Kartik Tyagi',R:'Bowler',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Rahul Tripathi',R:'Batter',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Tim Seifert',R:'Wicketkeeper',T:'KKR',Tp:'Overseas',P:'10 L'},
+      {N:'Sarthak Ranjan',R:'All-rounder',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Daksh Kamra',R:'All-rounder',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Akash Deep',R:'Bowler',T:'KKR',Tp:'Indian',P:'10 L'},
+      {N:'Rachin Ravindra',R:'All-rounder',T:'KKR',Tp:'Overseas',P:'10 L'},
+      {N:'Rishabh Pant',R:'Wicketkeeper',T:'LSG',Tp:'Indian',P:'1 CR'},
+      {N:'Ayush Badoni',R:'All-rounder',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Abdul Samad',R:'Batter',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Aiden Markram',R:'Batter',T:'LSG',Tp:'Overseas',P:'1 CR'},
+      {N:'Himmat Singh',R:'Batter',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Matthew Breetzke',R:'Batter',T:'LSG',Tp:'Overseas',P:'10 L'},
+      {N:'Nicholas Pooran',R:'Wicketkeeper',T:'LSG',Tp:'Overseas',P:'5 CR'},
+      {N:'Mitchell Marsh',R:'Batter',T:'LSG',Tp:'Overseas',P:'5 CR'},
+      {N:'Shahbaz Ahamad',R:'All-rounder',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Arshin Kulkarni',R:'All-rounder',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Mayank Yadav',R:'Bowler',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Avesh Khan',R:'Bowler',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Mohsin Khan',R:'Bowler',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'M. Siddharth',R:'Bowler',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Digvesh Rathi',R:'Bowler',T:'LSG',Tp:'Indian',P:'1 CR'},
+      {N:'Prince Yadav',R:'Bowler',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Akash Singh',R:'Bowler',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Arjun Tendulkar',R:'Bowler',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Mohammed Shami',R:'Bowler',T:'LSG',Tp:'Indian',P:'1 CR'},
+      {N:'Anrich Nortje',R:'Bowler',T:'LSG',Tp:'Overseas',P:'10 L'},
+      {N:'Wanindu Hasaranga',R:'All-rounder',T:'LSG',Tp:'Overseas',P:'10 L'},
+      {N:'Mukul Choudhary',R:'Wicketkeeper',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Naman Tiwari',R:'All-rounder',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Akshat Raghuvanshi',R:'Batter',T:'LSG',Tp:'Indian',P:'10 L'},
+      {N:'Josh Inglis',R:'Batter',T:'LSG',Tp:'Overseas',P:'10 L'},
+      {N:'Rohit Sharma',R:'Batter',T:'MI',Tp:'Indian',P:'1 CR'},
+      {N:'Surya Kumar Yadav',R:'Batter',T:'MI',Tp:'Indian',P:'5 CR'},
+      {N:'Robin Minz',R:'Wicketkeeper',T:'MI',Tp:'Indian',P:'10 L'},
+      {N:'Ryan Rickelton',R:'Wicketkeeper',T:'MI',Tp:'Overseas',P:'1 CR'},
+      {N:'Tilak Varma',R:'Batter',T:'MI',Tp:'Indian',P:'5 CR'},
+      {N:'Hardik Pandya',R:'All-rounder',T:'MI',Tp:'Indian',P:'5 CR'},
+      {N:'Naman Dhir',R:'All-rounder',T:'MI',Tp:'Indian',P:'10 L'},
+      {N:'Mitchell Santner',R:'All-rounder',T:'MI',Tp:'Overseas',P:'10 L'},
+      {N:'Will Jacks',R:'All-rounder',T:'MI',Tp:'Overseas',P:'10 L'},
+      {N:'Corbin Bosch',R:'All-rounder',T:'MI',Tp:'Overseas',P:'10 L'},
+      {N:'Raj Bawa',R:'All-rounder',T:'MI',Tp:'Indian',P:'10 L'},
+      {N:'Trent Boult',R:'Bowler',T:'MI',Tp:'Overseas',P:'1 CR'},
+      {N:'Jasprit Bumrah',R:'Bowler',T:'MI',Tp:'Indian',P:'5 CR'},
+      {N:'Deepak Chahar',R:'Bowler',T:'MI',Tp:'Indian',P:'1 CR'},
+      {N:'Ashwani Kumar',R:'Bowler',T:'MI',Tp:'Indian',P:'10 L'},
+      {N:'Raghu Sharma',R:'Bowler',T:'MI',Tp:'Indian',P:'10 L'},
+      {N:'Allah Ghazanfar',R:'Bowler',T:'MI',Tp:'Overseas',P:'10 L'},
+      {N:'Mayank Markande',R:'Bowler',T:'MI',Tp:'Indian',P:'10 L'},
+      {N:'Shardul Thakur',R:'All-rounder',T:'MI',Tp:'Indian',P:'10 L'},
+      {N:'Sherfane Rutherford',R:'Batter',T:'MI',Tp:'Overseas',P:'10 L'},
+      {N:'Quinton De Kock',R:'Wicketkeeper',T:'MI',Tp:'Overseas',P:'10 L'},
+      {N:'Atharva Ankolekar',R:'All-rounder',T:'MI',Tp:'Indian',P:'10 L'},
+      {N:'Mohammad Izhar',R:'Bowler',T:'MI',Tp:'Indian',P:'10 L'},
+      {N:'Danish Malewar',R:'Batter',T:'MI',Tp:'Indian',P:'10 L'},
+      {N:'Mayank Rawat',R:'All-rounder',T:'MI',Tp:'Indian',P:'10 L'},
+      {N:'Shreyas Iyer',R:'Batter',T:'PBKS',Tp:'Indian',P:'5 CR'},
+      {N:'Nehal Wadhera',R:'Batter',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Vishnu Vinod',R:'Wicketkeeper',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Harnoor Pannu',R:'Batter',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Pyla Avinash',R:'Batter',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Prabhsimran Singh',R:'Wicketkeeper',T:'PBKS',Tp:'Indian',P:'1 CR'},
+      {N:'Shashank Singh',R:'Batter',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Marcus Stoinis',R:'All-rounder',T:'PBKS',Tp:'Overseas',P:'10 L'},
+      {N:'Harpreet Brar',R:'All-rounder',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Marco Jansen',R:'All-rounder',T:'PBKS',Tp:'Overseas',P:'1 CR'},
+      {N:'Azmatullah Omarzai',R:'All-rounder',T:'PBKS',Tp:'Overseas',P:'10 L'},
+      {N:'Priyansh Arya',R:'All-rounder',T:'PBKS',Tp:'Indian',P:'1 CR'},
+      {N:'Musheer Khan',R:'All-rounder',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Suryansh Shedge',R:'All-rounder',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Mitch Owen',R:'All-rounder',T:'PBKS',Tp:'Overseas',P:'10 L'},
+      {N:'Arshdeep Singh',R:'Bowler',T:'PBKS',Tp:'Indian',P:'5 CR'},
+      {N:'Yuzvendra Chahal',R:'Bowler',T:'PBKS',Tp:'Indian',P:'1 CR'},
+      {N:'Vyshak Vijaykumar',R:'Bowler',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Yash Thakur',R:'Bowler',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Xavier Bartlett',R:'Bowler',T:'PBKS',Tp:'Overseas',P:'10 L'},
+      {N:'Lockie Ferguson',R:'Bowler',T:'PBKS',Tp:'Overseas',P:'10 L'},
+      {N:'Cooper Connolly',R:'All-rounder',T:'PBKS',Tp:'Overseas',P:'10 L'},
+      {N:'Ben Dwarshuis',R:'All-rounder',T:'PBKS',Tp:'Overseas',P:'10 L'},
+      {N:'Vishal Nishad',R:'Bowler',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Pravin Dubey',R:'Bowler',T:'PBKS',Tp:'Indian',P:'10 L'},
+      {N:'Shubham Dubey',R:'Batter',T:'RR',Tp:'Indian',P:'10 L'},
+      {N:'Vaibhav Suryavanshi',R:'Batter',T:'RR',Tp:'Indian',P:'1 CR'},
+      {N:'Lhuan-dre Pretorius',R:'Batter',T:'RR',Tp:'Overseas',P:'10 L'},
+      {N:'Shimron Hetmyer',R:'Batter',T:'RR',Tp:'Overseas',P:'10 L'},
+      {N:'Yashasvi Jaiswal',R:'Batter',T:'RR',Tp:'Indian',P:'5 CR'},
+      {N:'Dhruv Jurel',R:'Wicketkeeper',T:'RR',Tp:'Indian',P:'1 CR'},
+      {N:'Riyan Parag',R:'Batter',T:'RR',Tp:'Indian',P:'5 CR'},
+      {N:'Yudhvir Singh Charak',R:'All-rounder',T:'RR',Tp:'Indian',P:'10 L'},
+      {N:'Jofra Archer',R:'Bowler',T:'RR',Tp:'Overseas',P:'1 CR'},
+      {N:'Tushar Deshpande',R:'Bowler',T:'RR',Tp:'Indian',P:'10 L'},
+      {N:'Sandeep Sharma',R:'Bowler',T:'RR',Tp:'Indian',P:'10 L'},
+      {N:'Kwena Maphaka',R:'Bowler',T:'RR',Tp:'Overseas',P:'10 L'},
+      {N:'Nandre Burger',R:'Bowler',T:'RR',Tp:'Overseas',P:'10 L'},
+      {N:'Ravindra Jadeja',R:'All-rounder',T:'RR',Tp:'Indian',P:'1 CR'},
+      {N:'Sam Curran',R:'All-rounder',T:'RR',Tp:'Overseas',P:'1 CR'},
+      {N:'Donovan Ferreira',R:'Wicketkeeper',T:'RR',Tp:'Overseas',P:'10 L'},
+      {N:'Ravi Bishnoi',R:'Bowler',T:'RR',Tp:'Indian',P:'1 CR'},
+      {N:'Sushant Mishra',R:'Bowler',T:'RR',Tp:'Indian',P:'10 L'},
+      {N:'Vignesh Puthur',R:'Bowler',T:'RR',Tp:'Indian',P:'10 L'},
+      {N:'Yash Raj Punja',R:'Bowler',T:'RR',Tp:'Indian',P:'10 L'},
+      {N:'Ravi Singh',R:'Wicketkeeper',T:'RR',Tp:'Indian',P:'10 L'},
+      {N:'Brijesh Sharma',R:'Bowler',T:'RR',Tp:'Indian',P:'10 L'},
+      {N:'Aman Rao',R:'Batter',T:'RR',Tp:'Indian',P:'10 L'},
+      {N:'Adam Milne',R:'Bowler',T:'RR',Tp:'Overseas',P:'10 L'},
+      {N:'Kuldeep Sen',R:'Bowler',T:'RR',Tp:'Indian',P:'10 L'},
+      {N:'Rajat Patidar',R:'Batter',T:'RCB',Tp:'Indian',P:'5 CR'},
+      {N:'Virat Kohli',R:'Batter',T:'RCB',Tp:'Indian',P:'5 CR'},
+      {N:'Tim David',R:'All-rounder',T:'RCB',Tp:'Overseas',P:'1 CR'},
+      {N:'Devdutt Padikkal',R:'Batter',T:'RCB',Tp:'Indian',P:'1 CR'},
+      {N:'Phil Salt',R:'Wicketkeeper',T:'RCB',Tp:'Overseas',P:'1 CR'},
+      {N:'Jitesh Sharma',R:'Wicketkeeper',T:'RCB',Tp:'Indian',P:'1 CR'},
+      {N:'Krunal Pandya',R:'All-rounder',T:'RCB',Tp:'Indian',P:'1 CR'},
+      {N:'Jacob Bethell',R:'All-rounder',T:'RCB',Tp:'Overseas',P:'1 CR'},
+      {N:'Romario Shepherd',R:'All-rounder',T:'RCB',Tp:'Overseas',P:'10 L'},
+      {N:'Swapnil Singh',R:'All-rounder',T:'RCB',Tp:'Indian',P:'10 L'},
+      {N:'Josh Hazlewood',R:'Bowler',T:'RCB',Tp:'Overseas',P:'5 CR'},
+      {N:'Bhuvneshwar Kumar',R:'Bowler',T:'RCB',Tp:'Indian',P:'1 CR'},
+      {N:'Rasikh Salam',R:'Bowler',T:'RCB',Tp:'Indian',P:'10 L'},
+      {N:'Yash Dayal',R:'Bowler',T:'RCB',Tp:'Indian',P:'10 L'},
+      {N:'Suyash Sharma',R:'Bowler',T:'RCB',Tp:'Indian',P:'10 L'},
+      {N:'Nuwan Thushara',R:'Bowler',T:'RCB',Tp:'Overseas',P:'10 L'},
+      {N:'Abhinandan Singh',R:'Bowler',T:'RCB',Tp:'Indian',P:'10 L'},
+      {N:'Venkatesh Iyer',R:'All-rounder',T:'RCB',Tp:'Indian',P:'1 CR'},
+      {N:'Jacob Duffy',R:'Bowler',T:'RCB',Tp:'Overseas',P:'10 L'},
+      {N:'Mangesh Yadav',R:'All-rounder',T:'RCB',Tp:'Indian',P:'10 L'},
+      {N:'Satvik Deswal',R:'All-rounder',T:'RCB',Tp:'Indian',P:'10 L'},
+      {N:'Jordan Cox',R:'Batter',T:'RCB',Tp:'Overseas',P:'10 L'},
+      {N:'Kanishk Chouhan',R:'All-rounder',T:'RCB',Tp:'Indian',P:'10 L'},
+      {N:'Vihaan Malhotra',R:'All-rounder',T:'RCB',Tp:'Indian',P:'10 L'},
+      {N:'Vicky Ostwal',R:'All-rounder',T:'RCB',Tp:'Indian',P:'10 L'},
+      {N:'Travis Head',R:'Batter',T:'SRH',Tp:'Overseas',P:'5 CR'},
+      {N:'Abhishek Sharma',R:'All-rounder',T:'SRH',Tp:'Indian',P:'5 CR'},
+      {N:'Aniket Verma',R:'Batter',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'R Smaran',R:'Batter',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Ishan Kishan',R:'Wicketkeeper',T:'SRH',Tp:'Indian',P:'5 CR'},
+      {N:'Heinrich Klaasen',R:'Wicketkeeper',T:'SRH',Tp:'Overseas',P:'1 CR'},
+      {N:'Nitish Kumar Reddy',R:'All-rounder',T:'SRH',Tp:'Indian',P:'1 CR'},
+      {N:'Harsh Dubey',R:'All-rounder',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Kamindu Mendis',R:'All-rounder',T:'SRH',Tp:'Overseas',P:'10 L'},
+      {N:'Harshal Patel',R:'All-rounder',T:'SRH',Tp:'Indian',P:'1 CR'},
+      {N:'Brydon Carse',R:'All-rounder',T:'SRH',Tp:'Overseas',P:'10 L'},
+      {N:'Pat Cummins',R:'Bowler',T:'SRH',Tp:'Overseas',P:'5 CR'},
+      {N:'Jaydev Unadkat',R:'Bowler',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Eshan Malinga',R:'Bowler',T:'SRH',Tp:'Overseas',P:'10 L'},
+      {N:'Zeeshan Ansari',R:'Bowler',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Shivang Kumar',R:'All-rounder',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Salil Arora',R:'Wicketkeeper',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Krains Fuletra',R:'Bowler',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Praful Hinge',R:'Bowler',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Amit Kumar',R:'Bowler',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Onkar Tarmale',R:'Bowler',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Sakib Hussain',R:'Bowler',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Liam Livingstone',R:'All-rounder',T:'SRH',Tp:'Overseas',P:'1 CR'},
+      {N:'Shivam Mavi',R:'Bowler',T:'SRH',Tp:'Indian',P:'10 L'},
+      {N:'Jack Edwards',R:'All-rounder',T:'SRH',Tp:'Overseas',P:'10 L'},
+    ];
+
+    function pKey(name) { return name.replace(/[\s.]/g, '_'); }
+    function basePriceToLakhs(p) { return p === '5 CR' ? 500 : p === '1 CR' ? 100 : 10; }
+    function nextBid(cur) { if (cur < 500) return cur + 10; if (cur < 1000) return cur + 20; return cur + 50; }
+    function fmtL(l) { if (l >= 100) { const c = l / 100; return (c % 1 === 0 ? c : c.toFixed(1)) + ' CR'; } return l + ' L'; }
+
+    function roleBadgeClass(r) {
+      if (r === 'Batter') return 'badge-batter';
+      if (r === 'Bowler') return 'badge-bowler';
+      if (r === 'All-rounder') return 'badge-allrounder';
+      if (r === 'Wicketkeeper') return 'badge-keeper';
+      return '';
+    }
+
+    function makeMetaHTML(p) {
+      if (!p) return '';
+      return `<span class="badge ${roleBadgeClass(p.role)}">${p.role}</span>
+        <span class="badge badge-team">${p.iplTeam}</span>
+        <span class="badge ${p.type === 'Indian' ? 'badge-indian' : 'badge-overseas'}">${p.type}</span>`;
+    }
+
+    let aState = {}, tData = {}, soldD = {}, unsoldD = {};
+
+    // ── Auth ──
+    document.getElementById('admin-login-btn').addEventListener('click', tryLogin);
+    document.getElementById('admin-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+    function tryLogin() {
+      if (document.getElementById('admin-pw').value === ADMIN_PW) {
+        document.getElementById('lock-screen').classList.add('hidden');
+        document.getElementById('admin-main').classList.remove('hidden');
+      } else {
+        document.getElementById('admin-err').textContent = 'Wrong password';
+      }
+    }
+
+    window.lockAdmin = function() {
+      document.getElementById('lock-screen').classList.remove('hidden');
+      document.getElementById('admin-main').classList.add('hidden');
+      document.getElementById('admin-pw').value = '';
+      document.getElementById('admin-err').textContent = '';
+    };
+
+    // ── Firebase listeners ──
+    onValue(ref(db, 'auction'), snap => { aState = snap.val() || {}; render(); });
+    onValue(ref(db, 'teams'),   snap => { tData  = snap.val() || {}; render(); });
+    onValue(ref(db, 'sold'),    snap => { soldD  = snap.val() || {}; updateStats(); });
+    onValue(ref(db, 'unsold'),  snap => { unsoldD= snap.val() || {}; updateStats(); });
+
+    function showOnly(id) {
+      ['s-idle','s-active','s-sold','s-unsold'].forEach(s =>
+        document.getElementById(s).classList.toggle('hidden', s !== id));
+    }
+
+    function render() {
+      const st = aState.status || 'idle';
+
+      if (st === 'idle') { showOnly('s-idle'); return; }
+
+      const p = aState.currentPlayer;
+
+      if (st === 'nominating' || st === 'bidding') {
+        showOnly('s-active');
+        document.getElementById('a-name').textContent = p?.name || '';
+        document.getElementById('a-meta').innerHTML = makeMetaHTML(p);
+        document.getElementById('a-bid-amount').textContent = fmtL(aState.currentBid || 0);
+
+        if (aState.currentBidder && FT_MAP[aState.currentBidder]) {
+          document.getElementById('a-bid-label').textContent = 'CURRENT BID';
+          document.getElementById('a-bidder-wrap').classList.remove('hidden');
+          const ft = FT_MAP[aState.currentBidder];
+          document.getElementById('a-bidder-name').innerHTML = `<span style="color:${ft.c}">${ft.e} ${ft.n}</span>`;
+        } else {
+          document.getElementById('a-bid-label').textContent = 'BASE PRICE';
+          document.getElementById('a-bidder-wrap').classList.add('hidden');
+        }
+
+        renderTeamBtns();
+        renderHistory();
+        return;
+      }
+
+      if (st === 'sold') {
+        showOnly('s-sold');
+        document.getElementById('s-sold-name').textContent = p?.name || '';
+        document.getElementById('s-sold-price').textContent = fmtL(aState.currentBid || 0);
+        if (aState.currentBidder && FT_MAP[aState.currentBidder]) {
+          const ft = FT_MAP[aState.currentBidder];
+          document.getElementById('s-sold-to').innerHTML = `<span style="color:${ft.c}">${ft.e} ${ft.n}</span>`;
+        }
+        return;
+      }
+
+      if (st === 'unsold') {
+        showOnly('s-unsold');
+        document.getElementById('s-unsold-name').textContent = p?.name || '';
+        return;
+      }
+    }
+
+    function renderTeamBtns() {
+      const grid = document.getElementById('team-btns');
+      const cb = aState.currentBidder;
+      const cur = aState.currentBid || 0;
+      const newAmt = cb !== null ? nextBid(cur) : cur;
+
+      grid.innerHTML = FTMS.map(ft => {
+        const td = tData[ft.k] || {};
+        const budget = td.budgetLakhs ?? 10000;
+        const sq = td.squad ? Object.keys(td.squad).length : 0;
+        const isSelf = cb === ft.k;
+        const dis = isSelf || budget < newAmt || sq >= MAX_SQUAD;
+        const acl = isSelf ? ' active-bidder' : '';
+
+        return `<button class="team-btn${acl}" ${dis ? 'disabled' : ''} onclick="placeBid('${ft.k}')">
+          <span style="font-size:1.1rem;line-height:1">${ft.e}</span>
+          <span class="dot" style="background:${ft.c}"></span>
+          <span>${ft.k}</span>
+          <span class="info">${fmtL(budget)} · ${sq}/11</span>
+        </button>`;
+      }).join('');
+
+      document.getElementById('btn-sell').disabled = !cb;
+      document.getElementById('btn-undo').disabled = !aState.bidHistory || Object.keys(aState.bidHistory).length === 0;
+    }
+
+    function renderHistory() {
+      const wrap = document.getElementById('a-history-wrap');
+      const cont = document.getElementById('a-bid-history');
+      const bh = aState.bidHistory;
+      if (!bh) { wrap.classList.add('hidden'); return; }
+      const entries = Object.entries(bh).sort((a, b) => (b[1].ts || 0) - (a[1].ts || 0));
+      if (!entries.length) { wrap.classList.add('hidden'); return; }
+      wrap.classList.remove('hidden');
+      cont.innerHTML = entries.map(([, v]) => {
+        const ft = FT_MAP[v.team];
+        return `<div class="history-item">
+          <span style="background:${ft?.c||'#666'};width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+          <span style="font-weight:600;color:${ft?.c||'var(--fg)'}">${ft?.e||''} ${v.team}</span>
+          <span style="margin-left:auto;color:var(--gold);font-weight:700;">${fmtL(v.amount)}</span>
+        </div>`;
+      }).join('');
+    }
+
+    function updateStats() {
+      const sc = Object.keys(soldD).length, uc = Object.keys(unsoldD).length;
+      document.getElementById('stat-rem').textContent = PLAYERS.length - sc - uc;
+      document.getElementById('stat-sold').textContent = sc;
+      document.getElementById('stat-unsold').textContent = uc;
+    }
+
+    // ── Admin actions ──
+    window.initAuction = async function() {
+      if (!confirm('Reset the entire auction? All squads and sold data will be erased.')) return;
+      const teamsObj = {};
+      FTMS.forEach(ft => { teamsObj[ft.k] = { name: ft.n, budgetLakhs: 10000, squad: {} }; });
+      await set(ref(db), {
+        auction: { status:'idle', currentPlayer:null, currentBid:0, currentBidder:null, bidHistory:null },
+        teams: teamsObj, sold: null, unsold: null
+      });
+    };
+
+    window.openPicker = function() {
+      document.getElementById('picker-modal').classList.remove('hidden');
+      document.getElementById('picker-search').value = '';
+      window.renderPicker();
+    };
+
+    window.closePicker = function() {
+      document.getElementById('picker-modal').classList.add('hidden');
+    };
+
+    window.renderPicker = function() {
+      const q = document.getElementById('picker-search').value.toLowerCase();
+      const remaining = PLAYERS.filter(p => !soldD[pKey(p.N)] && !unsoldD[pKey(p.N)]);
+      const PO = { '5 CR': 0, '1 CR': 1, '10 L': 2 };
+      remaining.sort((a, b) => (PO[a.P] ?? 9) - (PO[b.P] ?? 9));
+      const filtered = q ? remaining.filter(p => p.N.toLowerCase().includes(q)) : remaining;
+      const list = document.getElementById('picker-list');
+      if (!filtered.length) { list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);">No players found</div>'; return; }
+      let html = '', lastP = '';
+      filtered.forEach(p => {
+        if (p.P !== lastP) {
+          const label = p.P === '5 CR' ? '5 Crore' : p.P === '1 CR' ? '1 Crore' : '10 Lakh';
+          html += `<div class="picker-group">${label} — ${filtered.filter(x => x.P === p.P).length} players</div>`;
+          lastP = p.P;
+        }
+        html += `<div class="picker-row" onclick="nominatePlayer('${p.N.replace(/'/g, "\\'")}')">
+          <div><div class="pname">${p.N}</div><div class="pmeta">${p.R} · ${p.T} · ${p.Tp}</div></div>
+          <span class="badge" style="background:rgba(247,193,30,0.1);color:var(--gold);border:1px solid rgba(247,193,30,0.3);">${p.P}</span>
+        </div>`;
+      });
+      list.innerHTML = html;
+    };
+
+    window.nominatePlayer = async function(name) {
+      const p = PLAYERS.find(x => x.N === name);
+      if (!p) return;
+      const baseLakhs = basePriceToLakhs(p.P);
+      await update(ref(db, 'auction'), {
+        status: 'nominating',
+        currentPlayer: { name: p.N, role: p.R, iplTeam: p.T, type: p.Tp, basePriceLakhs: baseLakhs },
+        currentBid: baseLakhs, currentBidder: null, bidHistory: null
+      });
+      window.closePicker();
+    };
+
+    window.placeBid = async function(teamKey) {
+      const cb = aState.currentBidder;
+      const cur = aState.currentBid || 0;
+      if (cb === teamKey) return;
+      const td = tData[teamKey] || {};
+      const budget = td.budgetLakhs ?? 10000;
+      const sq = td.squad ? Object.keys(td.squad).length : 0;
+      const newBidAmt = cb !== null ? nextBid(cur) : cur;
+      if (budget < newBidAmt || sq >= MAX_SQUAD) return;
+
+      const hk = push(ref(db, 'auction/bidHistory')).key;
+      const u = {};
+      u[`auction/bidHistory/${hk}`] = { team: teamKey, amount: newBidAmt, prevTeam: cb, prevAmount: cur, ts: Date.now() };
+      u['auction/status'] = 'bidding';
+      u['auction/currentBid'] = newBidAmt;
+      u['auction/currentBidder'] = teamKey;
+      await update(ref(db), u);
+    };
+
+    window.undoLastBid = async function() {
+      const bh = aState.bidHistory;
+      if (!bh) return;
+      const keys = Object.keys(bh);
+      if (!keys.length) return;
+      const lastKey = keys[keys.length - 1];
+      const last = bh[lastKey];
+      const u = {};
+      u['auction/currentBid'] = last.prevAmount;
+      u['auction/currentBidder'] = last.prevTeam || null;
+      u['auction/status'] = last.prevTeam ? 'bidding' : 'nominating';
+      u[`auction/bidHistory/${lastKey}`] = null;
+      await update(ref(db), u);
+    };
+
+    window.sellPlayer = async function() {
+      const buyer = aState.currentBidder;
+      if (!buyer) return;
+      const p = aState.currentPlayer;
+      const pk = pKey(p.name);
+      const cur = aState.currentBid;
+      const td = tData[buyer] || {};
+      const u = {};
+      u['auction/status'] = 'sold';
+      u[`teams/${buyer}/budgetLakhs`] = (td.budgetLakhs ?? 10000) - cur;
+      u[`teams/${buyer}/squad/${pk}`] = { name: p.name, role: p.role, iplTeam: p.iplTeam, type: p.type, priceLakhs: cur };
+      u[`sold/${pk}`] = { owner: buyer, priceLakhs: cur, ts: Date.now() };
+      await update(ref(db), u);
+    };
+
+    window.markUnsold = async function() {
+      const p = aState.currentPlayer;
+      if (!p) return;
+      await update(ref(db), { 'auction/status': 'unsold', [`unsold/${pKey(p.name)}`]: true });
+    };
+
+    window.nextPlayer = async function() {
+      await update(ref(db, 'auction'), {
+        status: 'idle', currentPlayer: null, currentBid: 0, currentBidder: null, bidHistory: null
+      });
+    };
+  </script>
+</body>
+</html>
