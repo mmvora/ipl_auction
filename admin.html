@@ -135,7 +135,14 @@
 
         <!-- Team buttons -->
         <div style="padding:0 20px 16px;">
-          <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:8px;">Place bid for team</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+            <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">Place bid for team</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-left:auto;">
+              <span style="font-size:0.68rem;color:var(--muted);font-weight:600;">Custom bid:</span>
+              <input type="number" id="custom-bid" placeholder="" style="background:var(--muted-bg);border:1px solid var(--border);color:var(--gold);border-radius:6px;padding:6px 10px;font-size:0.85rem;font-weight:700;outline:none;width:100px;text-align:center;" />
+              <span style="font-size:0.72rem;color:var(--muted);font-weight:600;">L</span>
+            </div>
+          </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;" id="team-btns"></div>
         </div>
 
@@ -610,6 +617,7 @@
 
       document.getElementById('btn-sell').disabled = !cb;
       document.getElementById('btn-undo').disabled = !aState.bidHistory || Object.keys(aState.bidHistory).length === 0;
+      document.getElementById('custom-bid').placeholder = newAmt + ' L';
     }
 
     function renderHistory() {
@@ -712,8 +720,17 @@
       const td = tData[teamKey] || {};
       const budget = td.budgetLakhs ?? 10000;
       const sq = td.squad ? Object.keys(td.squad).length : 0;
-      const newBidAmt = cb !== null ? nextBid(cur) : cur;
+
+      const customInput = document.getElementById('custom-bid');
+      const customVal = parseInt(customInput.value);
+      let newBidAmt;
+      if (customVal && customVal > cur) {
+        newBidAmt = customVal;
+      } else {
+        newBidAmt = cb !== null ? nextBid(cur) : cur;
+      }
       if (budget < newBidAmt || sq >= MAX_SQUAD) return;
+      customInput.value = '';
 
       const hk = push(ref(db, 'auction/bidHistory')).key;
       const u = {};
