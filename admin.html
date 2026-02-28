@@ -717,7 +717,7 @@
 
       const hk = push(ref(db, 'auction/bidHistory')).key;
       const u = {};
-      u[`auction/bidHistory/${hk}`] = { team: teamKey, amount: newBidAmt, prevTeam: cb, prevAmount: cur, ts: Date.now() };
+      u[`auction/bidHistory/${hk}`] = { team: teamKey, amount: newBidAmt, prevTeam: cb || '', prevAmount: cur, ts: Date.now() };
       u['auction/status'] = 'bidding';
       u['auction/currentBid'] = newBidAmt;
       u['auction/currentBidder'] = teamKey;
@@ -733,8 +733,9 @@
       const last = bh[lastKey];
       const u = {};
       u['auction/currentBid'] = last.prevAmount;
-      u['auction/currentBidder'] = last.prevTeam || null;
-      u['auction/status'] = last.prevTeam ? 'bidding' : 'nominating';
+      const hadPrev = last.prevTeam && last.prevTeam !== '';
+      u['auction/currentBidder'] = hadPrev ? last.prevTeam : null;
+      u['auction/status'] = hadPrev ? 'bidding' : 'nominating';
       u[`auction/bidHistory/${lastKey}`] = null;
       await update(ref(db), u);
     };
