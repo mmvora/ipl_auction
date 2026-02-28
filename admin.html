@@ -597,7 +597,7 @@
       const grid = document.getElementById('team-btns');
       const cb = aState.currentBidder;
       const cur = aState.currentBid || 0;
-      const newAmt = cb !== null ? nextBid(cur) : cur;
+      const newAmt = (cb && cb !== '') ? nextBid(cur) : cur;
 
       grid.innerHTML = FTMS.map(ft => {
         const td = tData[ft.k] || {};
@@ -727,7 +727,7 @@
       if (customVal && customVal > cur) {
         newBidAmt = customVal;
       } else {
-        newBidAmt = cb !== null ? nextBid(cur) : cur;
+        newBidAmt = (cb && cb !== '') ? nextBid(cur) : cur;
       }
       if (budget < newBidAmt || sq >= MAX_SQUAD) return;
       customInput.value = '';
