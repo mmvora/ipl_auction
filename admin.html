@@ -113,7 +113,10 @@
     <div id="s-idle" class="card card-gold" style="text-align:center;padding:48px 24px;">
       <div style="font-size:2rem;margin-bottom:12px;">🔨</div>
       <h2 style="font-size:1.1rem;font-weight:700;margin:0 0 8px;">Ready for next player</h2>
-      <button class="act-btn btn-nominate" onclick="openPicker()" style="margin-top:12px;">Nominate Player</button>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;">
+        <button class="act-btn btn-nominate" onclick="randomPlayer()">🎲 Random Player</button>
+        <button class="act-btn btn-undo" onclick="openPicker()">Pick Manually</button>
+      </div>
     </div>
 
     <!-- State: Nominating / Bidding -->
@@ -642,6 +645,18 @@
       await set(ref(db), {
         auction: { status:'idle', currentPlayer:null, currentBid:0, currentBidder:null, bidHistory:null },
         teams: teamsObj, sold: null, unsold: null
+      });
+    };
+
+    window.randomPlayer = async function() {
+      const remaining = PLAYERS.filter(p => !soldD[pKey(p.N)] && !unsoldD[pKey(p.N)]);
+      if (!remaining.length) { alert('No players remaining!'); return; }
+      const p = remaining[Math.floor(Math.random() * remaining.length)];
+      const baseLakhs = basePriceToLakhs(p.P);
+      await update(ref(db, 'auction'), {
+        status: 'nominating',
+        currentPlayer: { name: p.N, role: p.R, iplTeam: p.T, type: p.Tp, basePriceLakhs: baseLakhs },
+        currentBid: baseLakhs, currentBidder: null, bidHistory: null
       });
     };
 
