@@ -932,10 +932,10 @@
 
     window.renderAddPlayerList = function() {
       const q = document.getElementById('addplayer-search').value.toLowerCase();
-      const remaining = PLAYERS.filter(p => !soldD[pKey(p.N)] && !unsoldD[pKey(p.N)]);
+      const all = [...PLAYERS];
       const PO = { '5 CR': 0, '1 CR': 1, '10 L': 2 };
-      remaining.sort((a, b) => (PO[a.P] ?? 9) - (PO[b.P] ?? 9));
-      const filtered = q ? remaining.filter(p => p.N.toLowerCase().includes(q)) : remaining;
+      all.sort((a, b) => (PO[a.P] ?? 9) - (PO[b.P] ?? 9));
+      const filtered = q ? all.filter(p => p.N.toLowerCase().includes(q)) : all;
       const list = document.getElementById('addplayer-list');
       if (!filtered.length) { list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);">No players found</div>'; return; }
       let html = '', lastP = '';
@@ -963,7 +963,6 @@
       const budget = td.budgetLakhs ?? 10000;
       const sq = td.squad ? Object.keys(td.squad).length : 0;
 
-      if (sq >= MAX_SQUAD) { alert('Squad is full (11/11)'); return; }
       if (price > budget) { alert('Not enough budget'); return; }
 
       const u = {};
