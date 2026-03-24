@@ -29,6 +29,10 @@
     .sq-price { color: var(--gold); font-weight: 700; font-size: 0.78rem; }
     .empty-squad { font-size: 0.78rem; color: var(--muted); padding: 8px 0; }
     .squad-count { font-size: 0.68rem; color: var(--muted); padding: 0 20px 12px; }
+    .badge-c{background:rgba(247,193,30,0.15);color:var(--gold);border:1px solid rgba(247,193,30,0.4);font-size:0.58rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
+    .badge-vc{background:rgba(148,163,184,0.12);color:#94a3b8;border:1px solid rgba(148,163,184,0.3);font-size:0.58rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
+    .captain-name{color:var(--gold)!important;font-weight:700!important}
+    .vc-name{color:#94a3b8!important;font-weight:600!important}
   </style>
   <script src="header.js"></script>
 </head>
@@ -113,14 +117,21 @@
       grid.innerHTML = FTMS.map(ft => {
         const td = tData[ft.k] || {};
         const budget = td.budgetLakhs ?? 10000;
-        const squad = td.squad ? Object.values(td.squad) : [];
+        const captain = td.captain || '';
+        const viceCaptain = td.viceCaptain || '';
+        const squad = td.squad ? Object.entries(td.squad) : [];
         const spent = 10000 - budget;
 
         const squadHTML = squad.length > 0
-          ? squad.map(s => `<div class="squad-row">
-              <div><span class="sq-name">${s.name}</span> <span class="sq-role">· ${s.role}</span></div>
+          ? squad.map(([pk, s]) => {
+            const isC = captain === pk, isVC = viceCaptain === pk;
+            const cls = isC ? ' captain-name' : isVC ? ' vc-name' : '';
+            const badge = isC ? ' <span class="badge-c">C</span>' : isVC ? ' <span class="badge-vc">VC</span>' : '';
+            return `<div class="squad-row">
+              <div><span class="sq-name${cls}">${s.name}${badge}</span> <span class="sq-role">· ${s.role}</span></div>
               <span class="sq-price">${fmtL(s.priceLakhs)}</span>
-            </div>`).join('')
+            </div>`;
+          }).join('')
           : '<div class="empty-squad">No players yet</div>';
 
         return `<div class="team-card" style="border-left:3px solid ${ft.c};">
