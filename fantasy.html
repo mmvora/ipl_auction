@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPL Fantasy League 2026 — Fantasy Standings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+
+    /* Leaderboard */
+    .lb-row{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);transition:background .1s}
+    .lb-row:last-child{border-bottom:none}
+    .lb-row:hover{background:var(--muted-bg)}
+    .lb-rank{font-size:1.4rem;font-weight:900;width:36px;text-align:center;flex-shrink:0}
+    .lb-rank-1{color:var(--gold)}
+    .lb-rank-2{color:#94a3b8}
+    .lb-rank-3{color:#cd7f32}
+    .lb-team-info{flex:1;min-width:0}
+    .lb-team-name{font-weight:700;font-size:0.95rem}
+    .lb-team-owner{font-size:0.72rem;color:var(--muted)}
+    .lb-points{text-align:right;flex-shrink:0}
+    .lb-pts-num{font-size:1.5rem;font-weight:900;color:var(--gold)}
+    .lb-pts-label{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)}
+    .lb-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+
+    /* Expanded squad */
+    .squad-detail{padding:0 20px 16px 70px}
+    .sq-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:0.78rem;border-bottom:1px solid var(--border)}
+    .sq-row:last-child{border-bottom:none}
+    .sq-row .name{font-weight:500;flex:1}
+    .sq-row .role{font-size:0.68rem;color:var(--muted)}
+    .sq-row .base-pts{color:var(--muted);font-size:0.72rem;min-width:50px;text-align:right}
+    .sq-row .mult{font-size:0.62rem;font-weight:700;min-width:30px;text-align:center}
+    .sq-row .total-pts{color:var(--gold);font-weight:700;font-size:0.82rem;min-width:55px;text-align:right}
+
+    .badge-c{background:rgba(247,193,30,0.15);color:var(--gold);border:1px solid rgba(247,193,30,0.4);font-size:0.55rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
+    .badge-vc{background:rgba(148,163,184,0.12);color:#94a3b8;border:1px solid rgba(148,163,184,0.3);font-size:0.55rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
+    .captain-name{color:var(--gold)!important;font-weight:700!important}
+    .vc-name{color:#94a3b8!important;font-weight:600!important}
+
+    .expand-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.75rem;padding:4px 8px;border-radius:4px;transition:all .12s}
+    .expand-btn:hover{color:var(--fg);background:var(--muted-bg)}
+
+    /* Top 3 podium cards */
+    .podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
+    .podium-card{border-radius:10px;padding:20px 16px;text-align:center;position:relative;overflow:hidden}
+    .podium-card .emoji{font-size:1.6rem;margin-bottom:6px}
+    .podium-card .p-name{font-weight:800;font-size:0.95rem;margin-bottom:2px}
+    .podium-card .p-owner{font-size:0.7rem;color:var(--muted)}
+    .podium-card .p-pts{font-size:1.8rem;font-weight:900;margin-top:8px}
+    .podium-card .p-label{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)}
+    .podium-1{background:linear-gradient(135deg,rgba(247,193,30,0.08),rgba(247,193,30,0.02));border:1px solid rgba(247,193,30,0.3)}
+    .podium-1 .p-pts{color:var(--gold)}
+    .podium-2{background:linear-gradient(135deg,rgba(148,163,184,0.08),rgba(148,163,184,0.02));border:1px solid rgba(148,163,184,0.2)}
+    .podium-2 .p-pts{color:#94a3b8}
+    .podium-3{background:linear-gradient(135deg,rgba(205,127,50,0.08),rgba(205,127,50,0.02));border:1px solid rgba(205,127,50,0.2)}
+    .podium-3 .p-pts{color:#cd7f32}
+
+    .stat-pill{background:var(--muted-bg);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+    .stat-pill strong{color:var(--fg);font-weight:600;font-size:0.875rem}
+
+    .hidden{display:none!important}
+  </style>
+  <script src="header.js"></script>
+</head>
+<body>
+
+  <main style="max-width:900px;margin:0 auto;padding:36px 24px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+      <div>
+        <h1 style="font-size:1.4rem;font-weight:800;margin:0 0 2px;">Fantasy Standings</h1>
+        <p style="font-size:0.8rem;color:var(--muted);margin:0;">Live team rankings · Captain 2x · Vice Captain 1.5x</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <div class="stat-pill"><strong id="stat-matches">—</strong> matches played</div>
+        <div class="stat-pill" style="color:var(--gold)"><strong id="stat-top-player" style="color:var(--gold)">—</strong> top scorer</div>
+      </div>
+    </div>
+
+    <!-- Podium -->
+    <div class="podium" id="podium"></div>
+
+    <!-- Full leaderboard -->
+    <div class="card" id="leaderboard"></div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js';
+    import { getDatabase, ref, onValue }
+      from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyB6icjFuutJqV3G2alfBrd2rJUmwghJxns",
+      authDomain: "iplfantasy-952c4.firebaseapp.com",
+      projectId: "iplfantasy-952c4",
+      storageBucket: "iplfantasy-952c4.firebasestorage.app",
+      messagingSenderId: "50120567665",
+      appId: "1:50120567665:web:99123e475943cd71e3a4d0",
+      databaseURL: "https://iplfantasy-952c4-default-rtdb.firebaseio.com"
+    });
+    const db = getDatabase(app);
+
+    const FTMS = [
+      { k:'Heet',     n:'Heet Hurricanes',    c:'#0EA5E9', e:'🌀' },
+      { k:'Divij',    n:'Divij Dragons',      c:'#DC2626', e:'🐉' },
+      { k:'Vrushank', n:'Vrushank Vikings',   c:'#7C3AED', e:'⚔️' },
+      { k:'Shrey',    n:'Shrey Strikers',     c:'#F59E0B', e:'⚡' },
+      { k:'Malhaar',  n:'Malhaar Monarchs',   c:'#D97706', e:'👑' },
+      { k:'Shivansh', n:'Shivansh Sharks',    c:'#0F766E', e:'🦈' },
+      { k:'Dev',      n:'Dev Dynamos',        c:'#EA580C', e:'💥' },
+      { k:'Sai',      n:'Sai Supernovas',     c:'#9333EA', e:'🌟' },
+      { k:'Moksh',    n:'Moksh Mavericks',    c:'#16A34A', e:'🤠' },
+      { k:'Darshan',  n:'Darshan Daredevils', c:'#BE123C', e:'😈' },
+      { k:'Rishab',   n:'Rishab Risers',      c:'#0369A1', e:'🚀' },
+      { k:'Div',      n:'Div Dominators',     c:'#4D7C0F', e:'👊' },
+      { k:'Mir',      n:'Mirs Magicians',     c:'#BE185D', e:'🪄' },
+    ];
+    const FT_MAP = {};
+    FTMS.forEach(t => FT_MAP[t.k] = t);
+
+    let tData = {};
+    let expanded = {};
+
+    onValue(ref(db, 'teams'), snap => {
+      tData = snap.val() || {};
+      render();
+    });
+
+    function calcTeam(teamKey) {
+      const td = tData[teamKey] || {};
+      const captain = td.captain || '';
+      const viceCaptain = td.viceCaptain || '';
+      const squad = td.squad ? Object.entries(td.squad) : [];
+      let total = 0;
+      const players = squad.map(([pk, s]) => {
+        const base = s.points || 0;
+        const mult = pk === captain ? 2 : pk === viceCaptain ? 1.5 : 1;
+        const pts = base * mult;
+        total += pts;
+        return { pk, ...s, base, mult, pts };
+      });
+      players.sort((a, b) => b.pts - a.pts);
+      return { total, players, captain, viceCaptain };
+    }
+
+    function render() {
+      const standings = FTMS.map(ft => {
+        const calc = calcTeam(ft.k);
+        return { ...ft, ...calc };
+      });
+      standings.sort((a, b) => b.total - a.total);
+
+      // Find top individual scorer (base points, no multiplier)
+      let topPlayer = null, topPts = 0;
+      standings.forEach(t => {
+        t.players.forEach(p => {
+          if (p.base > topPts) { topPts = p.base; topPlayer = p.name; }
+        });
+      });
+      document.getElementById('stat-top-player').textContent = topPlayer || '—';
+
+      // Podium
+      const podiumHTML = standings.slice(0, 3).map((t, i) => {
+        const cls = ['podium-1','podium-2','podium-3'][i];
+        const medal = ['🥇','🥈','🥉'][i];
+        return `<div class="podium-card ${cls}">
+          <div class="emoji">${t.e}</div>
+          <div>${medal}</div>
+          <div class="p-name" style="color:${t.c}">${t.n}</div>
+          <div class="p-owner">${t.k}</div>
+          <div class="p-pts">${Math.round(t.total * 10) / 10}</div>
+          <div class="p-label">points</div>
+        </div>`;
+      }).join('');
+      document.getElementById('podium').innerHTML = podiumHTML;
+
+      // Full leaderboard
+      const lbHTML = standings.map((t, i) => {
+        const rank = i + 1;
+        const rankCls = rank <= 3 ? ` lb-rank-${rank}` : '';
+        const isExp = expanded[t.k];
+
+        let squadHTML = '';
+        if (isExp) {
+          squadHTML = `<div class="squad-detail">${t.players.map(p => {
+            const isC = p.pk === t.captain, isVC = p.pk === t.viceCaptain;
+            const cls = isC ? ' captain-name' : isVC ? ' vc-name' : '';
+            const badge = isC ? ' <span class="badge-c">C</span>' : isVC ? ' <span class="badge-vc">VC</span>' : '';
+            const multLabel = p.mult > 1 ? `<span style="color:${p.mult === 2 ? 'var(--gold)' : '#94a3b8'}">×${p.mult}</span>` : '';
+            return `<div class="sq-row">
+              <span class="name${cls}">${p.name}${badge}</span>
+              <span class="role">${p.role}</span>
+              <span class="base-pts">${p.base} pts</span>
+              <span class="mult">${multLabel}</span>
+              <span class="total-pts">${Math.round(p.pts * 10) / 10}</span>
+            </div>`;
+          }).join('')}</div>`;
+        }
+
+        return `<div>
+          <div class="lb-row" style="cursor:pointer" onclick="toggleExpand('${t.k}')">
+            <div class="lb-rank${rankCls}">${rank}</div>
+            <span class="lb-dot" style="background:${t.c}"></span>
+            <span style="font-size:1.1rem">${t.e}</span>
+            <div class="lb-team-info">
+              <div class="lb-team-name" style="color:${t.c}">${t.n}</div>
+              <div class="lb-team-owner">${t.k} · ${t.players.length} players</div>
+            </div>
+            <div class="lb-points">
+              <div class="lb-pts-num">${Math.round(t.total * 10) / 10}</div>
+              <div class="lb-pts-label">points</div>
+            </div>
+            <span class="expand-btn">${isExp ? '▲' : '▼'}</span>
+          </div>
+          ${squadHTML}
+        </div>`;
+      }).join('');
+      document.getElementById('leaderboard').innerHTML = lbHTML;
+    }
+
+    window.toggleExpand = function(k) {
+      expanded[k] = !expanded[k];
+      render();
+    };
+  </script>
+</body>
+</html>
