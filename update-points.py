@@ -36,7 +36,7 @@ def parse_points(filepath="points-input.html"):
     with open(filepath, "r") as f:
         html = f.read()
     names = re.findall(r'plyrSel__name.*?<span>(.*?)</span>', html, re.DOTALL)
-    points = re.findall(r'tbl__cell--pts.*?<span>(.*?)</span>', html, re.DOTALL)
+    points = re.findall(r'tbl__cell--amt.*?<span>(.*?)</span>', html, re.DOTALL)
     return {n.strip(): float(p.strip()) for n, p in zip(names, points)}
 
 def build_squad_index(teams):
