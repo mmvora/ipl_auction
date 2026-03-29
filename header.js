@@ -154,7 +154,7 @@
     function tick() {
       const diff = AUCTION_DATE - new Date();
       if (diff <= 0) {
-        document.getElementById('countdown').innerHTML = '<span style="color:var(--gold);font-weight:700;font-size:0.85rem;">🔨 Auction is LIVE!</span>';
+        document.getElementById('countdown').innerHTML = '<span style="color:var(--gold);font-size:0.85rem;">🏏 <em style="font-style:italic;font-weight:400;letter-spacing:0.03em;font-family:Georgia,serif;">Yatra Pratibha Avsara Prapnotihi</em></span>';
         return;
       }
       const d = Math.floor(diff / 86400000);
