@@ -25,6 +25,7 @@ NAME_MAP = {
     "Vijaykumar Vyshak": "Vyshak Vijaykumar",
     "Varun Chakaravarthy": "Varun Chakravarthy",
     "Vaibhav Sooryavanshi": "Vaibhav Suryavanshi",
+    "Yudhvir Singh": "Yudhvir Singh Charak",
 }
 
 def fetch_teams():
