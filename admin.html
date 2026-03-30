@@ -91,6 +91,12 @@
     .tm-squad-row .actions button:hover{border-color:var(--gold);color:var(--fg)}
     .tm-squad-row .actions button.active-c{background:rgba(247,193,30,0.15);color:var(--gold);border-color:rgba(247,193,30,0.4)}
     .tm-squad-row .actions button.active-vc{background:rgba(148,163,184,0.12);color:#94a3b8;border-color:rgba(148,163,184,0.3)}
+    .pts-adj{display:flex;align-items:center;gap:3px;min-width:110px}
+    .pts-adj input{width:56px;background:var(--muted-bg);border:1px solid var(--border);color:var(--fg);border-radius:4px;padding:3px 5px;font-size:0.72rem;font-weight:600;text-align:center;outline:none}
+    .pts-adj input:focus{border-color:var(--gold)}
+    .pts-adj button{padding:3px 7px;border-radius:4px;font-size:0.65rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--muted-bg);color:var(--muted);transition:all .12s}
+    .pts-adj button:hover{border-color:var(--gold);color:var(--fg)}
+    .pts-adj-label{font-size:0.6rem;color:var(--muted);font-weight:600}
 
     @keyframes sold-pop{0%{transform:scale(0.9);opacity:0}50%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
     .sold-anim{animation:sold-pop 0.4s ease-out}
@@ -885,10 +891,16 @@
           const badge = isC ? ' <span class="badge-c">C</span>' : isVC ? ' <span class="badge-vc">VC</span>' : '';
           const cBtnClass = isC ? ' active-c' : '';
           const vcBtnClass = isVC ? ' active-vc' : '';
+          const adj = s.pointsAdj || 0;
           return `<div class="tm-squad-row">
             <span class="name${nameClass}">${s.name}${badge}</span>
             <span style="font-size:0.68rem;color:var(--muted)">${s.role} · ${s.iplTeam}</span>
             <span class="price">${fmtL(s.priceLakhs)}</span>
+            <span class="pts-adj">
+              <span class="pts-adj-label">adj</span>
+              <input type="number" id="adj-${pk}" value="${adj}" onchange="saveAdj('${pk}', this.value)" />
+              <button onclick="saveAdj('${pk}', document.getElementById('adj-${pk}').value)" title="Save adjustment">✓</button>
+            </span>
             <span class="actions">
               <button class="${cBtnClass}" onclick="setCaptain('${pk}')" title="Set Captain">C</button>
               <button class="${vcBtnClass}" onclick="setVC('${pk}')" title="Set Vice Captain">VC</button>
@@ -912,6 +924,12 @@
       const td = tData[selectedTeam] || {};
       const newVal = td.viceCaptain === pk ? null : pk;
       await update(ref(db, `teams/${selectedTeam}`), { viceCaptain: newVal });
+    };
+
+    window.saveAdj = async function(pk, val) {
+      if (!selectedTeam) return;
+      const num = parseInt(val) || 0;
+      await update(ref(db, `teams/${selectedTeam}/squad/${pk}`), { pointsAdj: num });
     };
 
     // ── Add player to team ──

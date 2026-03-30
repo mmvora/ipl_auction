@@ -145,9 +145,10 @@
         const mult = pk === captain ? 2 : pk === viceCaptain ? 1.5 : 1;
         const motmCount = motmData[pk] || 0;
         const motmBonus = motmCount * 50;
-        const pts = (base + motmBonus) * mult;
+        const adj = s.pointsAdj || 0;
+        const pts = ((base + motmBonus) * mult) + adj;
         total += pts;
-        return { pk, ...s, base, mult, pts, motmCount, motmBonus };
+        return { pk, ...s, base, mult, pts, motmCount, motmBonus, adj };
       });
       players.sort((a, b) => b.pts - a.pts);
       return { total, players, captain, viceCaptain };
@@ -199,12 +200,13 @@
             const motmBadge = p.motmCount > 0 ? ` <span class="badge-motm">MOTM${p.motmCount > 1 ? ' ×' + p.motmCount : ''}</span>` : '';
             const multLabel = p.mult > 1 ? `<span style="color:${p.mult === 2 ? 'var(--gold)' : '#94a3b8'}">×${p.mult}</span>` : '';
             const baseDisplay = p.motmBonus > 0 ? `${p.base}+${p.motmBonus}` : `${p.base}`;
+            const adjLabel = p.adj !== 0 ? ` <span style="color:${p.adj > 0 ? '#22c55e' : '#ef4444'};font-size:0.68rem;font-weight:600;">(${p.adj > 0 ? '+' : ''}${p.adj})</span>` : '';
             return `<div class="sq-row">
               <span class="name${cls}">${p.name}${badge}${motmBadge}</span>
               <span class="role">${p.role}</span>
               <span class="base-pts">${baseDisplay} pts</span>
               <span class="mult">${multLabel}</span>
-              <span class="total-pts">${Math.round(p.pts * 10) / 10}</span>
+              <span class="total-pts">${Math.round(p.pts * 10) / 10}${adjLabel}</span>
             </div>`;
           }).join('')}</div>`;
         }
