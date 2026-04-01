@@ -38,6 +38,7 @@
     .badge-c{background:rgba(247,193,30,0.15);color:var(--gold);border:1px solid rgba(247,193,30,0.4);font-size:0.55rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
     .badge-vc{background:rgba(148,163,184,0.12);color:#94a3b8;border:1px solid rgba(148,163,184,0.3);font-size:0.55rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
     .badge-motm{background:rgba(245,158,11,0.15);color:#F59E0B;border:1px solid rgba(245,158,11,0.35);font-size:0.55rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
+    .badge-ipl{font-size:0.52rem;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px;letter-spacing:0.02em}
     .captain-name{color:var(--gold)!important;font-weight:700!important}
     .vc-name{color:#94a3b8!important;font-weight:600!important}
 
@@ -120,6 +121,12 @@
     const FT_MAP = {};
     FTMS.forEach(t => FT_MAP[t.k] = t);
 
+    const IPL_COLORS = {
+      CSK: '#FDB913', MI: '#004BA0', RCB: '#EC1C24', KKR: '#3A225D',
+      DC: '#004C93', PBKS: '#DD1F2D', RR: '#EA1A85', SRH: '#FF822A',
+      GT: '#1B2133', LSG: '#0057E2'
+    };
+
     let tData = {};
     let motmData = {};
     let expanded = {};
@@ -198,11 +205,13 @@
             const cls = isC ? ' captain-name' : isVC ? ' vc-name' : '';
             const badge = isC ? ' <span class="badge-c">C</span>' : isVC ? ' <span class="badge-vc">VC</span>' : '';
             const motmBadge = p.motmCount > 0 ? ` <span class="badge-motm">MOTM${p.motmCount > 1 ? ' ×' + p.motmCount : ''}</span>` : '';
+            const iplC = IPL_COLORS[p.iplTeam] || '#64748b';
+            const iplBadge = p.iplTeam ? ` <span class="badge-ipl" style="color:${iplC};background:${iplC}18;border:1px solid ${iplC}40;">${p.iplTeam}</span>` : '';
             const multLabel = p.mult > 1 ? `<span style="color:${p.mult === 2 ? 'var(--gold)' : '#94a3b8'}">×${p.mult}</span>` : '';
             const baseDisplay = p.motmBonus > 0 ? `${p.base}+${p.motmBonus}` : `${p.base}`;
             const adjLabel = p.adj !== 0 ? ` <span style="color:${p.adj > 0 ? '#22c55e' : '#ef4444'};font-size:0.68rem;font-weight:600;">(${p.adj > 0 ? '+' : ''}${p.adj})</span>` : '';
             return `<div class="sq-row">
-              <span class="name${cls}">${p.name}${badge}${motmBadge}</span>
+              <span class="name${cls}">${p.name}${badge}${motmBadge}${iplBadge}</span>
               <span class="role">${p.role}</span>
               <span class="base-pts">${baseDisplay} pts</span>
               <span class="mult">${multLabel}</span>
