@@ -7,45 +7,281 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    .stat-pill { background: var(--muted-bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-size: 0.75rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-    .stat-pill strong { color: var(--fg); font-weight: 600; font-size: 0.875rem; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--gold); border-radius: 10px; overflow: hidden; box-shadow: 0 0 40px rgba(247,193,30,0.05); }
+    .page-shell { max-width: 1180px; margin: 0 auto; padding: 34px 24px 48px; }
+    .hero-copy { display: flex; flex-direction: column; justify-content: center; }
+    .hero-side { display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+    .hero-note { color: var(--muted); font-size: 0.82rem; line-height: 1.55; margin: 0; }
 
-    .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.15s; }
-    .team-card:hover { border-color: var(--gold); }
-    .team-header { padding: 16px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
-    .team-emoji { font-size: 1.4rem; line-height: 1; }
-    .team-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .team-name { font-weight: 700; font-size: 0.92rem; }
-    .team-owner { font-size: 0.75rem; color: var(--muted); }
-    .team-budget { margin-left: auto; text-align: right; }
-    .team-budget .amt { font-size: 1rem; font-weight: 800; color: var(--gold); }
-    .team-budget .lbl { font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-    .team-body { padding: 12px 20px; }
-    .squad-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 0.8rem; border-bottom: 1px solid var(--border); }
+    .teams-stage { margin-top: 22px; }
+    .section-bar {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .section-heading {
+      font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 0 0 4px;
+    }
+    .section-copy {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 16px;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 60px 18px;
+      color: var(--muted);
+      grid-column: 1 / -1;
+      border: 1px dashed rgba(148, 170, 204, 0.18);
+      border-radius: 22px;
+      background: rgba(10, 18, 33, 0.64);
+    }
+
+    .team-card {
+      --team-accent: var(--gold);
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+      border-radius: 26px;
+      border: 1px solid rgba(148, 170, 204, 0.14);
+      background: linear-gradient(180deg, rgba(16, 27, 46, 0.92), rgba(8, 15, 27, 0.98));
+      box-shadow: 0 24px 60px rgba(4, 10, 20, 0.36);
+      isolation: isolate;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .team-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, var(--team-accent), transparent 44%);
+      opacity: 0.14;
+      z-index: -1;
+    }
+
+    .team-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 30px 72px rgba(4, 10, 20, 0.44);
+    }
+
+    .team-top {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .team-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .team-emoji { font-size: 1.5rem; line-height: 1; }
+    .team-name { font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif; font-weight: 700; font-size: 1.02rem; line-height: 1.05; margin-bottom: 6px; }
+    .team-owner { color: var(--muted); font-size: 0.76rem; font-weight: 600; letter-spacing: 0.02em; }
+    .team-budget {
+      min-width: 118px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      text-align: right;
+      background: rgba(8, 16, 30, 0.74);
+      border: 1px solid rgba(153, 178, 214, 0.12);
+    }
+    .team-budget .amt { display: block; font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif; font-size: 1.22rem; font-weight: 700; color: var(--fg); letter-spacing: -0.03em; }
+    .team-budget .lbl { display: block; margin-top: 4px; font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+
+    .team-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .team-meta-card {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(8, 16, 30, 0.64);
+      border: 1px solid rgba(153, 178, 214, 0.1);
+    }
+
+    .team-meta-card strong {
+      display: block;
+      font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+      color: var(--fg);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-top: 3px;
+    }
+
+    .team-meta-label {
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .team-progress {
+      margin-bottom: 14px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(151, 175, 214, 0.1);
+    }
+
+    .progress-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-bottom: 10px;
+    }
+
+    .progress-track {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--team-accent), rgba(255, 255, 255, 0.95));
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.14);
+    }
+
+    .leader-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .leader-chip,
+    .leader-empty {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .leader-chip {
+      border: 1px solid rgba(153, 178, 214, 0.16);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted-strong);
+    }
+
+    .leader-chip strong {
+      font-size: 0.64rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .leader-chip-c strong { color: var(--gold-soft); }
+    .leader-chip-vc strong { color: #a7b8ff; }
+
+    .leader-empty {
+      color: var(--muted);
+      border: 1px dashed rgba(153, 178, 214, 0.14);
+      background: rgba(8, 16, 30, 0.4);
+    }
+
+    .roster-panel {
+      border-radius: 20px;
+      background: rgba(6, 12, 23, 0.66);
+      border: 1px solid rgba(151, 175, 214, 0.1);
+      overflow: hidden;
+    }
+
+    .roster-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(151, 175, 214, 0.08);
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .squad-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      border-bottom: 1px solid rgba(151, 175, 214, 0.08);
+    }
+
     .squad-row:last-child { border-bottom: none; }
-    .sq-name { font-weight: 500; }
-    .sq-role { font-size: 0.68rem; color: var(--muted); }
-    .sq-price { color: var(--gold); font-weight: 700; font-size: 0.78rem; }
-    .empty-squad { font-size: 0.78rem; color: var(--muted); padding: 8px 0; }
-    .squad-count { font-size: 0.68rem; color: var(--muted); padding: 0 20px 12px; }
-    .badge-c{background:rgba(247,193,30,0.15);color:var(--gold);border:1px solid rgba(247,193,30,0.4);font-size:0.58rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
-    .badge-vc{background:rgba(148,163,184,0.12);color:#94a3b8;border:1px solid rgba(148,163,184,0.3);font-size:0.58rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
-    .captain-name{color:var(--gold)!important;font-weight:700!important}
-    .vc-name{color:#94a3b8!important;font-weight:600!important}
 
-    .page-shell { max-width: 1100px; margin: 0 auto; padding: 36px 24px; }
-    .page-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:24px; }
-    .stats-row { display:flex; gap:8px; flex-wrap:wrap; }
-    .teams-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
+    .sq-main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .sq-name { font-weight: 600; color: var(--fg); }
+    .sq-role { font-size: 0.7rem; color: var(--muted); }
+    .sq-price { color: var(--gold-soft); font-weight: 700; font-size: 0.78rem; }
+    .empty-squad { padding: 18px 14px; font-size: 0.8rem; color: var(--muted); }
+    .badge-c{background:rgba(247,193,30,0.15);color:var(--gold);border:1px solid rgba(247,193,30,0.4);font-size:0.58rem;padding:1px 5px;border-radius:999px;font-weight:800;margin-left:6px}
+    .badge-vc{background:rgba(148,163,184,0.12);color:#b6c4ff;border:1px solid rgba(148,163,184,0.3);font-size:0.58rem;padding:1px 5px;border-radius:999px;font-weight:800;margin-left:6px}
+    .captain-name{color:var(--gold-soft)!important;font-weight:700!important}
+    .vc-name{color:#c3ccff!important;font-weight:600!important}
+
+    @media (max-width: 900px) {
+      .section-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
 
     @media (max-width: 720px) {
-      .page-shell { padding: 24px 16px 32px; }
-      .teams-grid { grid-template-columns: 1fr; gap: 12px; }
-      .team-header, .team-body, .squad-count { padding-left: 14px; padding-right: 14px; }
-      .team-header { gap: 10px; }
-      .team-budget .amt { font-size: 0.9rem; }
-      .stat-pill { padding: 6px 10px; }
+      .page-shell { padding: 24px 16px 36px; }
+      .teams-grid { grid-template-columns: 1fr; gap: 14px; }
+      .team-card { padding: 16px; border-radius: 22px; }
+      .team-top { grid-template-columns: auto minmax(0, 1fr); }
+      .team-budget { grid-column: 1 / -1; text-align: left; min-width: 0; }
+      .team-budget .amt { font-size: 1.08rem; }
+      .team-meta-grid { grid-template-columns: 1fr; }
+      .progress-head { flex-direction: column; align-items: flex-start; }
+      .squad-row { grid-template-columns: 1fr auto; }
     }
   </style>
   <script src="header.js"></script>
@@ -53,21 +289,46 @@
 <body>
 
   <main class="page-shell">
-    <div class="page-head">
-      <div>
-        <h1 style="font-size:1.25rem; font-weight:700; color:var(--fg); margin:0 0 2px;">Teams</h1>
-        <p style="font-size:0.8rem; color:var(--muted); margin:0;">All 13 fantasy teams · Live budget & squads</p>
+    <section class="hero-panel">
+      <div class="hero-copy">
+        <span class="section-kicker">Franchise Boards</span>
+        <h1 class="page-title">Track every purse, roster, and captaincy call live.</h1>
+        <p class="page-subtitle">The league board now reads like an actual war room: clearer hierarchy, cleaner team cards, and roster information that works on both wide desktop screens and handheld devices.</p>
       </div>
-      <div class="stats-row">
-        <div class="stat-pill"><strong id="stat-total">13</strong> teams</div>
-        <div class="stat-pill" style="color:#4ade80;"><strong id="stat-sold" style="color:#4ade80;">0</strong> sold</div>
-        <div class="stat-pill" style="color:var(--gold);"><strong id="stat-spent" style="color:var(--gold);">0 CR</strong> spent</div>
+      <div class="hero-side">
+        <div class="metric-strip">
+          <div class="metric-card">
+            <span class="metric-label">Franchises</span>
+            <span class="metric-value" id="stat-total">13</span>
+            <span class="metric-note">Active fantasy teams in the league.</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Players Sold</span>
+            <span class="metric-value" id="stat-sold">0</span>
+            <span class="metric-note">Live auction purchases already completed.</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">League Spend</span>
+            <span class="metric-value" id="stat-spent">0 CR</span>
+            <span class="metric-note">Combined purse already deployed across squads.</span>
+          </div>
+        </div>
+        <p class="hero-note">Every card below updates from Firebase in real time, with roster progress, purse pressure, and leadership tags surfaced immediately.</p>
       </div>
-    </div>
+    </section>
 
-    <div class="teams-grid" id="teams-grid">
-      <div style="text-align:center;padding:60px;color:var(--muted);grid-column:1/-1;">Loading teams…</div>
-    </div>
+    <section class="teams-stage">
+      <div class="section-bar">
+        <div>
+          <h2 class="section-heading">Live Franchise Grid</h2>
+          <p class="section-copy">Scan budgets fast, open a roster instantly, and spot captaincy structure without needing to decode the whole page.</p>
+        </div>
+      </div>
+
+      <div class="teams-grid" id="teams-grid">
+        <div class="loading-state">Loading teams…</div>
+      </div>
+    </section>
   </main>
 
   <script type="module">
@@ -135,6 +396,21 @@
         const viceCaptain = td.viceCaptain || '';
         const squad = td.squad ? Object.entries(td.squad) : [];
         const spent = 10000 - budget;
+        const openSlots = Math.max(0, 11 - squad.length);
+        const rosterPct = Math.min(100, (squad.length / 11) * 100);
+        const playerMap = Object.fromEntries(squad.map(([pk, s]) => [pk, s.name]));
+        const leaderBits = [];
+
+        if (playerMap[captain]) {
+          leaderBits.push(`<span class="leader-chip leader-chip-c"><strong>C</strong> ${playerMap[captain]}</span>`);
+        }
+        if (playerMap[viceCaptain]) {
+          leaderBits.push(`<span class="leader-chip leader-chip-vc"><strong>VC</strong> ${playerMap[viceCaptain]}</span>`);
+        }
+
+        const leaderHTML = leaderBits.length > 0
+          ? leaderBits.join('')
+          : '<span class="leader-empty">Captain and vice captain not locked in yet.</span>';
 
         const squadHTML = squad.length > 0
           ? squad.map(([pk, s]) => {
@@ -142,27 +418,59 @@
             const cls = isC ? ' captain-name' : isVC ? ' vc-name' : '';
             const badge = isC ? ' <span class="badge-c">C</span>' : isVC ? ' <span class="badge-vc">VC</span>' : '';
             return `<div class="squad-row">
-              <div><span class="sq-name${cls}">${s.name}${badge}</span> <span class="sq-role">· ${s.role}</span></div>
+              <div class="sq-main">
+                <span class="sq-name${cls}">${s.name}${badge}</span>
+                <span class="sq-role">${s.role}</span>
+              </div>
               <span class="sq-price">${fmtL(s.priceLakhs)}</span>
             </div>`;
           }).join('')
           : '<div class="empty-squad">No players yet</div>';
 
-        return `<div class="team-card" style="border-left:3px solid ${ft.c};">
-          <div class="team-header">
-            <span class="team-emoji">${ft.e}</span>
+        return `<article class="team-card" style="--team-accent:${ft.c};">
+          <div class="team-top">
+            <div class="team-mark"><span class="team-emoji">${ft.e}</span></div>
             <div>
               <div class="team-name" style="color:${ft.c}">${ft.n}</div>
               <div class="team-owner">${ft.k}</div>
             </div>
             <div class="team-budget">
-              <div class="amt">${fmtL(budget)}</div>
-              <div class="lbl">Purse left</div>
+              <span class="amt">${fmtL(budget)}</span>
+              <span class="lbl">Purse Left</span>
             </div>
           </div>
-          <div class="squad-count">${squad.length}/11 players · ${fmtL(spent)} spent</div>
-          <div class="team-body">${squadHTML}</div>
-        </div>`;
+
+          <div class="team-meta-grid">
+            <div class="team-meta-card">
+              <span class="team-meta-label">Spent</span>
+              <strong>${fmtL(spent)}</strong>
+            </div>
+            <div class="team-meta-card">
+              <span class="team-meta-label">Open Slots</span>
+              <strong>${openSlots}</strong>
+            </div>
+          </div>
+
+          <div class="team-progress">
+            <div class="progress-head">
+              <span>Roster completion</span>
+              <span>${squad.length}/11 players</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${rosterPct}%;"></div>
+            </div>
+          </div>
+
+          <div class="leader-row">${leaderHTML}</div>
+
+          <div class="roster-panel">
+            <div class="roster-head">
+              <span>Squad List</span>
+              <span>${squad.length} player${squad.length === 1 ? '' : 's'}</span>
+            </div>
+            ${squadHTML}
+          </div>
+        </article>`;
       }).join('');
     }
   </script>

@@ -7,87 +7,203 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-    .page-shell{max-width:900px;margin:0 auto;padding:36px 24px}
-    .page-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px}
-    .stats-row{display:flex;gap:8px;flex-wrap:wrap}
+    .page-shell{max-width:1080px;margin:0 auto;padding:34px 24px 48px}
+    .hero-copy{display:flex;flex-direction:column;justify-content:center}
+    .hero-side{display:flex;flex-direction:column;gap:12px;justify-content:center}
+    .hero-note{margin:0;color:var(--muted);font-size:0.82rem;line-height:1.55}
 
-    /* Leaderboard */
-    .lb-row{display:grid;grid-template-columns:36px 12px 24px minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);transition:background .1s}
-    .lb-row:last-child{border-bottom:none}
-    .lb-row:hover{background:var(--muted-bg)}
-    .lb-rank{font-size:1.4rem;font-weight:900;width:36px;text-align:center;flex-shrink:0}
-    .lb-rank-1{color:var(--gold)}
-    .lb-rank-2{color:#94a3b8}
-    .lb-rank-3{color:#cd7f32}
-    .lb-team-info{flex:1;min-width:0}
-    .lb-team-name{font-weight:700;font-size:0.95rem}
-    .lb-team-owner{font-size:0.72rem;color:var(--muted)}
-    .lb-emoji{font-size:1.1rem;line-height:1}
-    .lb-points{text-align:right;flex-shrink:0}
-    .lb-pts-num{font-size:1.5rem;font-weight:900;color:var(--gold)}
-    .lb-pts-label{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)}
+    .fantasy-stage{margin-top:22px}
+    .section-heading{font-family:'Space Grotesk','Inter',system-ui,sans-serif;font-size:1.15rem;font-weight:700;letter-spacing:-0.03em;margin:0 0 4px}
+    .section-copy{color:var(--muted);font-size:0.84rem;line-height:1.55;margin:0 0 16px}
+
+    .podium{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      align-items:end;
+      gap:16px;
+      margin-bottom:22px;
+    }
+    .podium-card{
+      position:relative;
+      overflow:hidden;
+      padding:22px 18px;
+      border-radius:26px;
+      border:1px solid rgba(148,170,204,0.14);
+      background:linear-gradient(180deg,rgba(16,27,46,0.92),rgba(8,15,27,0.98));
+      box-shadow:0 24px 60px rgba(4,10,20,0.34);
+      text-align:left;
+      isolation:isolate;
+    }
+    .podium-card::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      opacity:0.16;
+      background:radial-gradient(circle at top right,var(--podium-accent),transparent 46%);
+      z-index:-1;
+    }
+    .podium-slot-center{transform:translateY(-16px)}
+    .podium-rank{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:0.72rem;
+      font-weight:700;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      margin-bottom:16px;
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+    }
+    .podium-topline{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px}
+    .podium-emoji{font-size:2rem;line-height:1}
+    .podium-owner{color:var(--muted);font-size:0.74rem;font-weight:600}
+    .podium-name{font-family:'Space Grotesk','Inter',system-ui,sans-serif;font-size:1.18rem;font-weight:700;letter-spacing:-0.03em;margin:0 0 4px}
+    .podium-points{font-family:'Space Grotesk','Inter',system-ui,sans-serif;font-size:2.5rem;font-weight:700;letter-spacing:-0.05em;line-height:0.95;margin-top:18px}
+    .podium-label{color:var(--muted);font-size:0.66rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-top:8px}
+    .podium-1{--podium-accent:rgba(247,193,30,0.96)}
+    .podium-1 .podium-points,.podium-1 .podium-rank{color:var(--gold-soft)}
+    .podium-2{--podium-accent:rgba(170,185,255,0.8)}
+    .podium-2 .podium-points,.podium-2 .podium-rank{color:#c3ccff}
+    .podium-3{--podium-accent:rgba(222,140,87,0.8)}
+    .podium-3 .podium-points,.podium-3 .podium-rank{color:#e0a37b}
+
+    .leaderboard-stack{display:grid;gap:14px}
+    .lb-entry{
+      --team-accent:var(--gold);
+      overflow:hidden;
+      border-radius:24px;
+      border:1px solid rgba(148,170,204,0.14);
+      background:linear-gradient(180deg,rgba(16,27,46,0.92),rgba(8,15,27,0.98));
+      box-shadow:0 22px 54px rgba(4,10,20,0.3);
+    }
+    .lb-entry.is-open{border-color:rgba(255,255,255,0.16)}
+    .lb-row{
+      width:100%;
+      display:grid;
+      grid-template-columns:44px 12px 28px minmax(0,1fr) auto auto;
+      gap:14px;
+      align-items:center;
+      padding:18px 20px;
+      background:none;
+      border:0;
+      color:inherit;
+      text-align:left;
+      cursor:pointer;
+    }
+    .lb-row:hover{background:rgba(255,255,255,0.025)}
+    .lb-rank{
+      font-family:'Space Grotesk','Inter',system-ui,sans-serif;
+      font-size:1.45rem;
+      font-weight:700;
+      width:44px;
+      text-align:center;
+      color:var(--muted-strong);
+    }
+    .lb-rank-1{color:var(--gold-soft)}
+    .lb-rank-2{color:#c3ccff}
+    .lb-rank-3{color:#e0a37b}
     .lb-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+    .lb-emoji{font-size:1.18rem;line-height:1}
+    .lb-team-info{min-width:0}
+    .lb-team-name{font-family:'Space Grotesk','Inter',system-ui,sans-serif;font-size:1.03rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:4px}
+    .lb-team-owner{color:var(--muted);font-size:0.74rem;font-weight:600}
+    .lb-points{
+      min-width:116px;
+      text-align:right;
+      padding:10px 12px;
+      border-radius:18px;
+      background:rgba(8,16,30,0.72);
+      border:1px solid rgba(153,178,214,0.12);
+    }
+    .lb-pts-num{font-family:'Space Grotesk','Inter',system-ui,sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:-0.04em;color:var(--fg)}
+    .lb-pts-label{color:var(--muted);font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+    .expand-btn{
+      width:34px;
+      height:34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(153,178,214,0.12);
+      color:var(--muted-strong);
+      font-size:1rem;
+      font-weight:700;
+    }
 
-    /* Expanded squad */
-    .squad-detail{padding:0 20px 16px 70px}
-    .sq-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center;gap:8px;padding:7px 0;font-size:0.78rem;border-bottom:1px solid var(--border)}
-    .sq-row:last-child{border-bottom:none}
-    .sq-row .name{font-weight:500;flex:1}
-    .sq-row .role{font-size:0.68rem;color:var(--muted)}
-    .sq-row .base-pts{color:var(--muted);font-size:0.72rem;min-width:50px;text-align:right}
-    .sq-row .mult{font-size:0.62rem;font-weight:700;min-width:30px;text-align:center}
-    .sq-row .total-pts{color:var(--gold);font-weight:700;font-size:0.82rem;min-width:55px;text-align:right}
+    .squad-detail{
+      padding:0 20px 18px;
+      border-top:1px solid rgba(151,175,214,0.08);
+      background:rgba(6,12,23,0.44);
+    }
+    .squad-head{
+      display:grid;
+      grid-template-columns:minmax(0,1.1fr) 92px 52px 96px;
+      gap:12px;
+      padding:14px 0 10px;
+      color:var(--muted);
+      font-size:0.66rem;
+      font-weight:700;
+      letter-spacing:0.1em;
+      text-transform:uppercase;
+    }
+    .sq-row{
+      display:grid;
+      grid-template-columns:minmax(0,1.1fr) 92px 52px 96px;
+      gap:12px;
+      align-items:center;
+      padding:11px 0;
+      font-size:0.8rem;
+      border-top:1px solid rgba(151,175,214,0.08);
+    }
+    .sq-row .name{font-weight:600;color:var(--fg)}
+    .sq-row .role{display:block;color:var(--muted);font-size:0.7rem;margin-top:3px}
+    .sq-row .base-pts{color:var(--muted);font-size:0.74rem;text-align:right}
+    .sq-row .mult{font-size:0.68rem;font-weight:700;text-align:center;color:var(--muted-strong)}
+    .sq-row .total-pts{color:var(--gold-soft);font-weight:700;font-size:0.82rem;text-align:right}
 
-    .badge-c{background:rgba(247,193,30,0.15);color:var(--gold);border:1px solid rgba(247,193,30,0.4);font-size:0.55rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
-    .badge-vc{background:rgba(148,163,184,0.12);color:#94a3b8;border:1px solid rgba(148,163,184,0.3);font-size:0.55rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
-    .badge-motm{background:rgba(245,158,11,0.15);color:#F59E0B;border:1px solid rgba(245,158,11,0.35);font-size:0.55rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
-    .badge-ipl{font-size:0.52rem;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px;letter-spacing:0.02em}
-    .captain-name{color:var(--gold)!important;font-weight:700!important}
-    .vc-name{color:#94a3b8!important;font-weight:600!important}
+    .badge-c{background:rgba(247,193,30,0.15);color:var(--gold);border:1px solid rgba(247,193,30,0.4);font-size:0.55rem;padding:1px 5px;border-radius:999px;font-weight:800;margin-left:6px}
+    .badge-vc{background:rgba(148,163,184,0.12);color:#c3ccff;border:1px solid rgba(148,163,184,0.3);font-size:0.55rem;padding:1px 5px;border-radius:999px;font-weight:800;margin-left:6px}
+    .badge-motm{background:rgba(245,158,11,0.15);color:#f8ba42;border:1px solid rgba(245,158,11,0.35);font-size:0.55rem;padding:1px 5px;border-radius:999px;font-weight:800;margin-left:6px}
+    .badge-ipl{font-size:0.52rem;padding:1px 5px;border-radius:999px;font-weight:700;margin-left:6px;letter-spacing:0.02em}
+    .captain-name{color:var(--gold-soft)!important;font-weight:700!important}
+    .vc-name{color:#c3ccff!important;font-weight:600!important}
 
-    .expand-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.75rem;padding:4px 8px;border-radius:4px;transition:all .12s}
-    .expand-btn:hover{color:var(--fg);background:var(--muted-bg)}
-
-    /* Top 3 podium cards */
-    .podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
-    .podium-card{border-radius:10px;padding:20px 16px;text-align:center;position:relative;overflow:hidden}
-    .podium-card .emoji{font-size:1.6rem;margin-bottom:6px}
-    .podium-card .p-name{font-weight:800;font-size:0.95rem;margin-bottom:2px}
-    .podium-card .p-owner{font-size:0.7rem;color:var(--muted)}
-    .podium-card .p-pts{font-size:1.8rem;font-weight:900;margin-top:8px}
-    .podium-card .p-label{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)}
-    .podium-1{background:linear-gradient(135deg,rgba(247,193,30,0.08),rgba(247,193,30,0.02));border:1px solid rgba(247,193,30,0.3)}
-    .podium-1 .p-pts{color:var(--gold)}
-    .podium-2{background:linear-gradient(135deg,rgba(148,163,184,0.08),rgba(148,163,184,0.02));border:1px solid rgba(148,163,184,0.2)}
-    .podium-2 .p-pts{color:#94a3b8}
-    .podium-3{background:linear-gradient(135deg,rgba(205,127,50,0.08),rgba(205,127,50,0.02));border:1px solid rgba(205,127,50,0.2)}
-    .podium-3 .p-pts{color:#cd7f32}
-
-    .stat-pill{background:var(--muted-bg);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:6px}
-    .stat-pill strong{color:var(--fg);font-weight:600;font-size:0.875rem}
-
-    .hidden{display:none!important}
+    @media (max-width: 900px) {
+      .podium{grid-template-columns:1fr;align-items:stretch}
+      .podium-slot-center{transform:none}
+    }
 
     @media (max-width: 720px) {
-      .page-shell{padding:24px 16px 32px}
-      .podium{grid-template-columns:1fr;gap:10px}
-      .podium-card{padding:16px 14px}
-      .lb-row{grid-template-columns:32px 10px 20px minmax(0,1fr) auto;gap:10px;padding:14px}
-      .lb-rank{width:32px;font-size:1.15rem}
-      .lb-team-name{font-size:0.88rem}
-      .lb-team-owner{font-size:0.68rem}
-      .lb-points{grid-column:4 / 5;text-align:left}
-      .lb-pts-num{font-size:1.15rem}
-      .expand-btn{grid-column:5 / 6;justify-self:end;padding:2px 4px}
-      .squad-detail{padding:0 14px 14px 14px}
-      .sq-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"name total" "role total" "base mult";align-items:start}
-      .sq-row .name{grid-area:name}
-      .sq-row .role{grid-area:role}
-      .sq-row .base-pts{grid-area:base;text-align:left;min-width:0}
-      .sq-row .mult{grid-area:mult;justify-self:end;min-width:0}
-      .sq-row .total-pts{grid-area:total;align-self:center;min-width:0}
-      .stat-pill{padding:6px 10px}
+      .page-shell{padding:24px 16px 36px}
+      .lb-row{
+        grid-template-columns:34px 10px 20px minmax(0,1fr) auto;
+        gap:10px;
+        padding:16px 14px;
+      }
+      .lb-rank{width:34px;font-size:1.12rem}
+      .lb-points{
+        grid-column:4 / 5;
+        text-align:left;
+        min-width:0;
+        padding:8px 10px;
+      }
+      .lb-pts-num{font-size:1.18rem}
+      .expand-btn{grid-column:5 / 6;justify-self:end}
+      .squad-detail{padding:0 14px 14px}
+      .squad-head{display:none}
+      .sq-row{
+        grid-template-columns:minmax(0,1fr) auto;
+        grid-template-areas:"name total" "base mult";
+        align-items:start;
+      }
+      .sq-row > div:first-child{grid-area:name}
+      .sq-row .base-pts{grid-area:base;text-align:left}
+      .sq-row .mult{grid-area:mult;justify-self:end}
+      .sq-row .total-pts{grid-area:total;align-self:center;text-align:right}
     }
   </style>
   <script src="header.js"></script>
@@ -95,21 +211,41 @@
 <body>
 
   <main class="page-shell">
-    <div class="page-head">
-      <div>
-        <h1 style="font-size:1.4rem;font-weight:800;margin:0 0 2px;">Fantasy Standings</h1>
-        <p style="font-size:0.8rem;color:var(--muted);margin:0;">Live team rankings · Captain 2x · Vice Captain 1.5x</p>
+    <section class="hero-panel">
+      <div class="hero-copy">
+        <span class="section-kicker">Standings Table</span>
+        <h1 class="page-title">See who is actually winning the season.</h1>
+        <p class="page-subtitle">The fantasy table now puts the hierarchy first: a stronger podium, cleaner points emphasis, and expandable squads that show exactly where each total is coming from.</p>
       </div>
-      <div class="stats-row">
-        <div class="stat-pill" style="color:var(--gold)"><strong id="stat-top-player" style="color:var(--gold)">—</strong> top scorer</div>
+      <div class="hero-side">
+        <div class="metric-strip">
+          <div class="metric-card">
+            <span class="metric-label">League Leader</span>
+            <span class="metric-value" id="stat-leader">—</span>
+            <span class="metric-note">Current first-place franchise by fantasy total.</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Top Scorer</span>
+            <span class="metric-value" id="stat-top-player">—</span>
+            <span class="metric-note">Highest raw points scorer before captain multipliers.</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Scoring Model</span>
+            <span class="metric-value">2x / 1.5x</span>
+            <span class="metric-note">Captain gets double, vice captain gets 1.5x, MOTM bonuses stack.</span>
+          </div>
+        </div>
+        <p class="hero-note">Tap any franchise to expand the scoring breakdown. On desktop the table reads like a proper standings board; on mobile it collapses into stacked scoring cards instead of a cramped pseudo-table.</p>
       </div>
-    </div>
+    </section>
 
-    <!-- Podium -->
-    <div class="podium" id="podium"></div>
+    <section class="fantasy-stage">
+      <h2 class="section-heading">Championship Race</h2>
+      <p class="section-copy">Top three are pulled out into podium cards, with the full league table below for deeper inspection.</p>
 
-    <!-- Full leaderboard -->
-    <div class="card" id="leaderboard"></div>
+      <div class="podium" id="podium"></div>
+      <div class="leaderboard-stack" id="leaderboard"></div>
+    </section>
   </main>
 
   <script type="module">
@@ -201,18 +337,31 @@
         });
       });
       document.getElementById('stat-top-player').textContent = topPlayer || '—';
+      document.getElementById('stat-leader').textContent = standings[0] ? standings[0].n : '—';
 
       // Podium
-      const podiumHTML = standings.slice(0, 3).map((t, i) => {
-        const cls = ['podium-1','podium-2','podium-3'][i];
-        const medal = ['🥇','🥈','🥉'][i];
-        return `<div class="podium-card ${cls}">
-          <div class="emoji">${t.e}</div>
-          <div>${medal}</div>
-          <div class="p-name" style="color:${t.c}">${t.n}</div>
-          <div class="p-owner">${t.k}</div>
-          <div class="p-pts">${Math.round(t.total * 10) / 10}</div>
-          <div class="p-label">points</div>
+      const podiumOrder = [
+        { idx: 1, slot: 'podium-slot-left' },
+        { idx: 0, slot: 'podium-slot-center' },
+        { idx: 2, slot: 'podium-slot-right' },
+      ].filter(({ idx }) => standings[idx]);
+
+      const podiumHTML = podiumOrder.map(({ idx, slot }) => {
+        const t = standings[idx];
+        const rank = idx + 1;
+        const cls = `podium-${rank}`;
+        const medal = ['🥇','🥈','🥉'][idx];
+        return `<div class="podium-card ${cls} ${slot}">
+          <div class="podium-rank">${medal} Rank ${rank}</div>
+          <div class="podium-topline">
+            <div>
+              <div class="podium-name" style="color:${t.c}">${t.n}</div>
+              <div class="podium-owner">${t.k}</div>
+            </div>
+            <div class="podium-emoji">${t.e}</div>
+          </div>
+          <div class="podium-points">${Math.round(t.total * 10) / 10}</div>
+          <div class="podium-label">Fantasy points</div>
         </div>`;
       }).join('');
       document.getElementById('podium').innerHTML = podiumHTML;
@@ -225,28 +374,38 @@
 
         let squadHTML = '';
         if (isExp) {
-          squadHTML = `<div class="squad-detail">${t.players.map(p => {
+          squadHTML = `<div class="squad-detail">
+            <div class="squad-head">
+              <span>Player</span>
+              <span style="text-align:right;">Base</span>
+              <span style="text-align:center;">Mult</span>
+              <span style="text-align:right;">Total</span>
+            </div>
+            ${t.players.map(p => {
             const isC = p.pk === t.captain, isVC = p.pk === t.viceCaptain;
             const cls = isC ? ' captain-name' : isVC ? ' vc-name' : '';
             const badge = isC ? ' <span class="badge-c">C</span>' : isVC ? ' <span class="badge-vc">VC</span>' : '';
             const motmBadge = p.motmCount > 0 ? ` <span class="badge-motm">MOTM${p.motmCount > 1 ? ' ×' + p.motmCount : ''}</span>` : '';
             const iplC = IPL_COLORS[p.iplTeam] || '#64748b';
             const iplBadge = p.iplTeam ? ` <span class="badge-ipl" style="color:#fff;background:${iplC};border:1px solid ${iplC};">${p.iplTeam}</span>` : '';
-            const multLabel = p.mult > 1 ? `<span style="color:${p.mult === 2 ? 'var(--gold)' : '#94a3b8'}">×${p.mult}</span>` : '';
+            const multLabel = p.mult > 1 ? `<span style="color:${p.mult === 2 ? 'var(--gold-soft)' : '#c3ccff'}">×${p.mult}</span>` : '<span>×1</span>';
             const baseDisplay = p.motmBonus > 0 ? `${p.base}+${p.motmBonus}` : `${p.base}`;
             const adjLabel = p.adj !== 0 ? ` <span style="color:${p.adj > 0 ? '#22c55e' : '#ef4444'};font-size:0.68rem;font-weight:600;">(${p.adj > 0 ? '+' : ''}${p.adj})</span>` : '';
             return `<div class="sq-row">
-              <span class="name${cls}">${p.name}${badge}${motmBadge}${iplBadge}</span>
-              <span class="role">${p.role}</span>
+              <div>
+                <span class="name${cls}">${p.name}${badge}${motmBadge}${iplBadge}</span>
+                <span class="role">${p.role}</span>
+              </div>
               <span class="base-pts">${baseDisplay} pts</span>
               <span class="mult">${multLabel}</span>
               <span class="total-pts">${Math.round(p.pts * 10) / 10}${adjLabel}</span>
             </div>`;
-          }).join('')}</div>`;
+          }).join('')}
+          </div>`;
         }
 
-        return `<div>
-          <div class="lb-row" style="cursor:pointer" onclick="toggleExpand('${t.k}')">
+        return `<article class="lb-entry${isExp ? ' is-open' : ''}" style="--team-accent:${t.c};">
+          <button class="lb-row" type="button" onclick="toggleExpand('${t.k}')">
             <div class="lb-rank${rankCls}">${rank}</div>
             <span class="lb-dot" style="background:${t.c}"></span>
             <span class="lb-emoji">${t.e}</span>
@@ -258,10 +417,10 @@
               <div class="lb-pts-num">${Math.round(t.total * 10) / 10}</div>
               <div class="lb-pts-label">points</div>
             </div>
-            <span class="expand-btn">${isExp ? '▲' : '▼'}</span>
-          </div>
+            <span class="expand-btn">${isExp ? '−' : '+'}</span>
+          </button>
           ${squadHTML}
-        </div>`;
+        </article>`;
       }).join('');
       document.getElementById('leaderboard').innerHTML = lbHTML;
     }
