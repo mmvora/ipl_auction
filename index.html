@@ -33,25 +33,39 @@
     .badge-vc{background:rgba(148,163,184,0.12);color:#94a3b8;border:1px solid rgba(148,163,184,0.3);font-size:0.58rem;padding:1px 5px;border-radius:3px;font-weight:800;margin-left:4px}
     .captain-name{color:var(--gold)!important;font-weight:700!important}
     .vc-name{color:#94a3b8!important;font-weight:600!important}
+
+    .page-shell { max-width: 1100px; margin: 0 auto; padding: 36px 24px; }
+    .page-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:24px; }
+    .stats-row { display:flex; gap:8px; flex-wrap:wrap; }
+    .teams-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
+
+    @media (max-width: 720px) {
+      .page-shell { padding: 24px 16px 32px; }
+      .teams-grid { grid-template-columns: 1fr; gap: 12px; }
+      .team-header, .team-body, .squad-count { padding-left: 14px; padding-right: 14px; }
+      .team-header { gap: 10px; }
+      .team-budget .amt { font-size: 0.9rem; }
+      .stat-pill { padding: 6px 10px; }
+    }
   </style>
   <script src="header.js"></script>
 </head>
 <body>
 
-  <main style="max-width:1100px; margin:0 auto; padding:36px 24px;">
-    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:24px;">
+  <main class="page-shell">
+    <div class="page-head">
       <div>
         <h1 style="font-size:1.25rem; font-weight:700; color:var(--fg); margin:0 0 2px;">Teams</h1>
         <p style="font-size:0.8rem; color:var(--muted); margin:0;">All 13 fantasy teams · Live budget & squads</p>
       </div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <div class="stats-row">
         <div class="stat-pill"><strong id="stat-total">13</strong> teams</div>
         <div class="stat-pill" style="color:#4ade80;"><strong id="stat-sold" style="color:#4ade80;">0</strong> sold</div>
         <div class="stat-pill" style="color:var(--gold);"><strong id="stat-spent" style="color:var(--gold);">0 CR</strong> spent</div>
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;" id="teams-grid">
+    <div class="teams-grid" id="teams-grid">
       <div style="text-align:center;padding:60px;color:var(--muted);grid-column:1/-1;">Loading teams…</div>
     </div>
   </main>
