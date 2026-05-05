@@ -431,43 +431,56 @@
     }
 
     @media (max-width: 720px) {
+      .site-chrome {
+        position: static;
+      }
+
       .header-shell {
-        padding: 12px 16px 14px;
+        padding: 10px 12px 12px;
       }
 
       .header-panel {
-        padding: 14px;
-        border-radius: 22px;
+        padding: 12px;
+        border-radius: 18px;
       }
 
       .header-top {
         flex-direction: column;
         align-items: stretch;
-        gap: 16px;
+        gap: 12px;
+        margin-bottom: 12px;
       }
 
       .brand-cluster {
         align-items: flex-start;
+        gap: 12px;
       }
 
       .logo-img,
       .logo-fallback {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
       }
 
       .logo-title {
-        font-size: 1.08rem;
+        font-size: 1rem;
+      }
+
+      .brand-eyebrow {
+        margin-bottom: 4px;
+        font-size: 0.64rem;
       }
 
       .brand-subtitle {
-        font-size: 0.8rem;
+        display: none;
       }
 
       .countdown-card {
         min-width: 0;
         width: 100%;
+        padding: 10px 12px;
+        border-radius: 16px;
       }
 
       .countdown-meta {
@@ -479,26 +492,65 @@
       }
 
       .cd-seg {
-        flex: 1 1 62px;
+        min-width: 0;
+        flex: 1 1 calc(50% - 6px);
+        padding: 7px 8px;
+      }
+
+      .cd-num {
+        font-size: 0.94rem;
+      }
+
+      .cd-unit {
+        font-size: 0.56rem;
+      }
+
+      .cd-sep {
+        display: none;
       }
 
       .nav-row {
-        gap: 8px;
-        padding: 5px;
+        gap: 6px;
+        padding: 4px;
+        border-radius: 16px;
       }
 
       .nav-link {
-        font-size: 0.82rem;
-        padding: 9px 12px;
+        font-size: 0.78rem;
+        padding: 8px 10px;
       }
 
       .hero-panel {
-        padding: 20px;
-        border-radius: 24px;
+        padding: 18px;
+        border-radius: 20px;
+        gap: 16px;
       }
 
       .page-title {
-        font-size: 2.1rem;
+        font-size: 1.8rem;
+        line-height: 1.02;
+      }
+
+      .page-subtitle {
+        font-size: 0.9rem;
+        line-height: 1.55;
+      }
+
+      .metric-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-card {
+        padding: 13px 14px;
+        border-radius: 16px;
+      }
+
+      .metric-value {
+        font-size: 1.08rem;
+      }
+
+      .metric-note {
+        font-size: 0.72rem;
       }
     }
   `;

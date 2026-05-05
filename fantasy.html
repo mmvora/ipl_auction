@@ -183,31 +183,110 @@
 
     @media (max-width: 720px) {
       .page-shell{padding:24px 16px 36px}
-      .lb-row{
-        grid-template-columns:34px 10px 20px minmax(0,1fr) auto;
-        gap:10px;
+      .hero-side{gap:10px}
+      .hero-note{display:none}
+      .section-copy{margin-bottom:12px}
+      .podium{gap:10px;margin-bottom:16px}
+      .podium-card{
         padding:16px 14px;
+        border-radius:20px;
       }
-      .lb-rank{width:34px;font-size:1.12rem}
+      .podium-rank{
+        margin-bottom:12px;
+        font-size:0.66rem;
+        padding:6px 9px;
+      }
+      .podium-topline{
+        margin-bottom:10px;
+        gap:10px;
+      }
+      .podium-emoji{font-size:1.45rem}
+      .podium-name{font-size:1rem}
+      .podium-owner{font-size:0.68rem}
+      .podium-points{
+        margin-top:12px;
+        font-size:1.9rem;
+      }
+      .podium-label{font-size:0.6rem}
+      .leaderboard-stack{gap:10px}
+      .lb-entry{border-radius:20px}
+      .lb-row{
+        grid-template-columns:28px 8px 16px minmax(0,1fr) auto;
+        gap:8px;
+        padding:14px 12px;
+      }
+      .lb-rank{
+        width:28px;
+        font-size:1rem;
+      }
+      .lb-dot{
+        width:8px;
+        height:8px;
+      }
+      .lb-emoji{
+        font-size:0.95rem;
+      }
+      .lb-team-name{
+        font-size:0.92rem;
+        margin-bottom:2px;
+      }
+      .lb-team-owner{
+        font-size:0.66rem;
+      }
       .lb-points{
-        grid-column:4 / 5;
+        grid-column:4 / 6;
+        justify-self:start;
         text-align:left;
         min-width:0;
-        padding:8px 10px;
+        margin-top:2px;
+        padding:7px 9px;
+        border-radius:14px;
       }
-      .lb-pts-num{font-size:1.18rem}
-      .expand-btn{grid-column:5 / 6;justify-self:end}
-      .squad-detail{padding:0 14px 14px}
+      .lb-pts-num{
+        font-size:1.02rem;
+      }
+      .lb-pts-label{
+        font-size:0.56rem;
+      }
+      .expand-btn{
+        width:28px;
+        height:28px;
+        grid-column:5 / 6;
+        justify-self:end;
+        font-size:0.92rem;
+      }
+      .squad-detail{padding:0 12px 12px}
       .squad-head{display:none}
       .sq-row{
         grid-template-columns:minmax(0,1fr) auto;
         grid-template-areas:"name total" "base mult";
         align-items:start;
+        gap:6px 10px;
+        padding:10px 0;
       }
       .sq-row > div:first-child{grid-area:name}
-      .sq-row .base-pts{grid-area:base;text-align:left}
-      .sq-row .mult{grid-area:mult;justify-self:end}
-      .sq-row .total-pts{grid-area:total;align-self:center;text-align:right}
+      .sq-row .name{
+        font-size:0.78rem;
+      }
+      .sq-row .role{
+        font-size:0.66rem;
+      }
+      .sq-row .base-pts{
+        grid-area:base;
+        text-align:left;
+        font-size:0.68rem;
+      }
+      .sq-row .mult{
+        grid-area:mult;
+        justify-self:end;
+        font-size:0.62rem;
+      }
+      .sq-row .total-pts{
+        grid-area:total;
+        align-self:center;
+        text-align:right;
+        font-size:0.76rem;
+      }
     }
   </style>
   <script src="header.js"></script>
