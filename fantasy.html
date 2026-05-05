@@ -8,9 +8,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .page-shell{max-width:900px;margin:0 auto;padding:36px 24px}
+    .page-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+    .stats-row{display:flex;gap:8px;flex-wrap:wrap}
 
     /* Leaderboard */
-    .lb-row{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);transition:background .1s}
+    .lb-row{display:grid;grid-template-columns:36px 12px 24px minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);transition:background .1s}
     .lb-row:last-child{border-bottom:none}
     .lb-row:hover{background:var(--muted-bg)}
     .lb-rank{font-size:1.4rem;font-weight:900;width:36px;text-align:center;flex-shrink:0}
@@ -20,6 +23,7 @@
     .lb-team-info{flex:1;min-width:0}
     .lb-team-name{font-weight:700;font-size:0.95rem}
     .lb-team-owner{font-size:0.72rem;color:var(--muted)}
+    .lb-emoji{font-size:1.1rem;line-height:1}
     .lb-points{text-align:right;flex-shrink:0}
     .lb-pts-num{font-size:1.5rem;font-weight:900;color:var(--gold)}
     .lb-pts-label{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)}
@@ -27,7 +31,7 @@
 
     /* Expanded squad */
     .squad-detail{padding:0 20px 16px 70px}
-    .sq-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:0.78rem;border-bottom:1px solid var(--border)}
+    .sq-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center;gap:8px;padding:7px 0;font-size:0.78rem;border-bottom:1px solid var(--border)}
     .sq-row:last-child{border-bottom:none}
     .sq-row .name{font-weight:500;flex:1}
     .sq-row .role{font-size:0.68rem;color:var(--muted)}
@@ -64,18 +68,39 @@
     .stat-pill strong{color:var(--fg);font-weight:600;font-size:0.875rem}
 
     .hidden{display:none!important}
+
+    @media (max-width: 720px) {
+      .page-shell{padding:24px 16px 32px}
+      .podium{grid-template-columns:1fr;gap:10px}
+      .podium-card{padding:16px 14px}
+      .lb-row{grid-template-columns:32px 10px 20px minmax(0,1fr) auto;gap:10px;padding:14px}
+      .lb-rank{width:32px;font-size:1.15rem}
+      .lb-team-name{font-size:0.88rem}
+      .lb-team-owner{font-size:0.68rem}
+      .lb-points{grid-column:4 / 5;text-align:left}
+      .lb-pts-num{font-size:1.15rem}
+      .expand-btn{grid-column:5 / 6;justify-self:end;padding:2px 4px}
+      .squad-detail{padding:0 14px 14px 14px}
+      .sq-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"name total" "role total" "base mult";align-items:start}
+      .sq-row .name{grid-area:name}
+      .sq-row .role{grid-area:role}
+      .sq-row .base-pts{grid-area:base;text-align:left;min-width:0}
+      .sq-row .mult{grid-area:mult;justify-self:end;min-width:0}
+      .sq-row .total-pts{grid-area:total;align-self:center;min-width:0}
+      .stat-pill{padding:6px 10px}
+    }
   </style>
   <script src="header.js"></script>
 </head>
 <body>
 
-  <main style="max-width:900px;margin:0 auto;padding:36px 24px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+  <main class="page-shell">
+    <div class="page-head">
       <div>
         <h1 style="font-size:1.4rem;font-weight:800;margin:0 0 2px;">Fantasy Standings</h1>
         <p style="font-size:0.8rem;color:var(--muted);margin:0;">Live team rankings · Captain 2x · Vice Captain 1.5x</p>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="stats-row">
         <div class="stat-pill" style="color:var(--gold)"><strong id="stat-top-player" style="color:var(--gold)">—</strong> top scorer</div>
       </div>
     </div>
@@ -224,7 +249,7 @@
           <div class="lb-row" style="cursor:pointer" onclick="toggleExpand('${t.k}')">
             <div class="lb-rank${rankCls}">${rank}</div>
             <span class="lb-dot" style="background:${t.c}"></span>
-            <span style="font-size:1.1rem">${t.e}</span>
+            <span class="lb-emoji">${t.e}</span>
             <div class="lb-team-info">
               <div class="lb-team-name" style="color:${t.c}">${t.n}</div>
               <div class="lb-team-owner">${t.k} · ${t.players.length} players</div>
