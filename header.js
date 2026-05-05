@@ -255,6 +255,16 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     }
 
+    .countdown-finished {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold-soft);
+      font-size: 0.95rem;
+      font-style: italic;
+      line-height: 1.35;
+    }
+
     .countdown-label {
       color: var(--gold-soft);
       font-size: 0.72rem;
@@ -430,7 +440,7 @@
       }
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 900px) {
       .site-chrome {
         position: static;
       }
@@ -510,14 +520,18 @@
       }
 
       .nav-row {
+        display: flex;
+        flex-wrap: wrap;
         gap: 6px;
         padding: 4px;
         border-radius: 16px;
       }
 
       .nav-link {
-        font-size: 0.78rem;
-        padding: 8px 10px;
+        flex: 1 1 calc(33.333% - 6px);
+        text-align: center;
+        font-size: 0.76rem;
+        padding: 8px 9px;
       }
 
       .hero-panel {
@@ -551,6 +565,16 @@
 
       .metric-note {
         font-size: 0.72rem;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .nav-link {
+        flex-basis: calc(50% - 6px);
+      }
+
+      .countdown-finished {
+        font-size: 0.82rem;
       }
     }
   `;
@@ -619,7 +643,7 @@
     function tick() {
       const diff = AUCTION_DATE - new Date();
       if (diff <= 0) {
-        document.getElementById('countdown').innerHTML = '<span style="color:var(--gold);font-size:0.85rem;">🏏 <em style="font-style:italic;font-weight:400;letter-spacing:0.03em;font-family:Georgia,serif;">Yatra Pratibha Avsara Prapnotihi</em></span>';
+        document.getElementById('countdown').innerHTML = '<span class="countdown-finished">🏏 <span>Yatra Pratibha Avsara Prapnotihi</span></span>';
         return;
       }
       const d = Math.floor(diff / 86400000);

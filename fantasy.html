@@ -176,9 +176,18 @@
     .vc-name{color:#c3ccff!important;font-weight:600!important}
 
     @media (max-width: 900px) {
-      .podium{grid-template-columns:1fr;align-items:stretch}
-      .podium{grid-template-areas:none}
-      .podium-slot-center{transform:none}
+      .podium{
+        display:flex;
+        flex-direction:column;
+        align-items:stretch;
+      }
+      .podium-slot-center,
+      .podium-slot-left,
+      .podium-slot-right{
+        grid-area:auto;
+        width:100%;
+        transform:none;
+      }
     }
 
     @media (max-width: 720px) {
@@ -212,20 +221,30 @@
       .lb-entry{border-radius:20px}
       .lb-row{
         grid-template-columns:28px 8px 16px minmax(0,1fr) auto;
+        grid-template-areas:
+          "rank dot emoji team expand"
+          "rank points points points points";
         gap:8px;
         padding:14px 12px;
       }
       .lb-rank{
+        grid-area:rank;
         width:28px;
         font-size:1rem;
+        align-self:start;
       }
       .lb-dot{
+        grid-area:dot;
         width:8px;
         height:8px;
+        align-self:center;
       }
       .lb-emoji{
+        grid-area:emoji;
         font-size:0.95rem;
+        align-self:center;
       }
+      .lb-team-info{grid-area:team}
       .lb-team-name{
         font-size:0.92rem;
         margin-bottom:2px;
@@ -234,7 +253,7 @@
         font-size:0.66rem;
       }
       .lb-points{
-        grid-column:4 / 6;
+        grid-area:points;
         justify-self:start;
         text-align:left;
         min-width:0;
@@ -249,10 +268,11 @@
         font-size:0.56rem;
       }
       .expand-btn{
+        grid-area:expand;
         width:28px;
         height:28px;
-        grid-column:5 / 6;
         justify-self:end;
+        align-self:start;
         font-size:0.92rem;
       }
       .squad-detail{padding:0 12px 12px}
