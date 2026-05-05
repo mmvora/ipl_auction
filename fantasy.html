@@ -19,6 +19,7 @@
     .podium{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-areas:"second first third";
       align-items:end;
       gap:16px;
       margin-bottom:22px;
@@ -42,7 +43,9 @@
       background:radial-gradient(circle at top right,var(--podium-accent),transparent 46%);
       z-index:-1;
     }
-    .podium-slot-center{transform:translateY(-16px)}
+    .podium-slot-center{grid-area:first;transform:translateY(-16px)}
+    .podium-slot-left{grid-area:second}
+    .podium-slot-right{grid-area:third}
     .podium-rank{
       display:inline-flex;
       align-items:center;
@@ -174,6 +177,7 @@
 
     @media (max-width: 900px) {
       .podium{grid-template-columns:1fr;align-items:stretch}
+      .podium{grid-template-areas:none}
       .podium-slot-center{transform:none}
     }
 
@@ -341,8 +345,8 @@
 
       // Podium
       const podiumOrder = [
-        { idx: 1, slot: 'podium-slot-left' },
         { idx: 0, slot: 'podium-slot-center' },
+        { idx: 1, slot: 'podium-slot-left' },
         { idx: 2, slot: 'podium-slot-right' },
       ].filter(({ idx }) => standings[idx]);
 
