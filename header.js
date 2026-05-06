@@ -629,6 +629,7 @@
                 ${nav('fantasy.html', 'Fantasy')}
                 ${nav('index.html', 'Teams')}
                 ${nav('players.html', 'Players')}
+                ${nav('stats.html', 'Stats')}
                 ${nav('rules.html', 'League Rules')}
                 ${nav('admin.html', 'Admin')}
               </nav>
