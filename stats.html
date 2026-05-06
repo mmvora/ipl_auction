@@ -26,12 +26,12 @@
     .insight-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px;border-radius:18px;background:rgba(8,16,30,.62);border:1px solid rgba(153,178,214,.1)}
     .rank-dot{width:32px;height:32px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:var(--gold-soft);font-weight:800;font-size:.82rem}
     .item-title{font-size:.86rem;font-weight:700;color:var(--fg);line-height:1.25}.item-sub{color:var(--muted);font-size:.72rem;line-height:1.35;margin-top:3px}.item-value{font-family:'Space Grotesk','Inter',system-ui,sans-serif;font-size:1rem;font-weight:700;color:var(--fg);text-align:right;white-space:nowrap}
-    .bars{display:grid;gap:12px}.bar-row{display:grid;grid-template-columns:minmax(96px,.8fr) minmax(0,2fr) auto;gap:12px;align-items:center}.bar-label{min-width:0;color:var(--muted-strong);font-size:.78rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bar-track{height:12px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden;border:1px solid rgba(153,178,214,.08)}.bar-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--bar-color,var(--gold)),rgba(255,255,255,.9));box-shadow:0 8px 24px rgba(255,255,255,.1)}.bar-value{color:var(--muted);font-size:.72rem;font-weight:700;text-align:right;white-space:nowrap}
+    .bars{display:grid;gap:12px}.bar-row{display:grid;grid-template-columns:minmax(130px,.85fr) minmax(0,2fr) minmax(92px,auto);gap:12px;align-items:center}.league-row{grid-template-columns:minmax(170px,220px) minmax(0,1fr) 112px}.bar-label{min-width:0;color:var(--muted-strong);font-size:.78rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bar-track{height:12px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden;border:1px solid rgba(153,178,214,.08)}.bar-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--bar-color,var(--gold)),rgba(255,255,255,.9));box-shadow:0 8px 24px rgba(255,255,255,.1)}.bar-value{color:var(--muted);font-size:.72rem;font-weight:700;text-align:right;white-space:nowrap}
     .mini-chart{height:240px;display:flex;align-items:end;gap:8px;padding:14px;border-radius:20px;background:rgba(8,16,30,.52);border:1px solid rgba(153,178,214,.1)}.chart-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end}.chart-bar{width:100%;min-height:3px;border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,var(--bar-color,var(--gold)),rgba(255,255,255,.18));box-shadow:0 -8px 24px rgba(247,193,30,.08)}.chart-label{width:100%;color:var(--muted);font-size:.62rem;font-weight:800;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chart-value{color:var(--muted-strong);font-size:.66rem;font-weight:800;text-align:center}
     .narrative{display:grid;gap:12px}.callout{padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.035);border:1px solid rgba(153,178,214,.1);color:var(--muted-strong);font-size:.84rem;line-height:1.55}.callout strong{color:var(--fg)}
     .table-wrap{overflow:auto;border-radius:18px;border:1px solid rgba(153,178,214,.12)}.stats-table{width:100%;border-collapse:collapse;min-width:720px}.stats-table th,.stats-table td{padding:12px 14px;border-bottom:1px solid rgba(153,178,214,.08);font-size:.78rem;text-align:left}.stats-table th{color:var(--muted);font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:rgba(8,16,30,.62)}.stats-table td{color:var(--muted-strong)}.stats-table tr:last-child td{border-bottom:0}.num{text-align:right!important;font-variant-numeric:tabular-nums}.good{color:#4ade80}.bad{color:#f87171}.gold{color:var(--gold-soft)}
     .loading-state{grid-column:1/-1;text-align:center;padding:54px 18px;color:var(--muted);border:1px dashed rgba(148,170,204,.18);border-radius:22px;background:rgba(10,18,33,.64)}
-    @media(max-width:960px){.span-8,.span-6,.span-4{grid-column:span 12}.stats-grid{gap:12px}.mini-chart{height:210px}.bar-row{grid-template-columns:minmax(82px,.7fr) minmax(0,1.6fr) auto}}
+    @media(max-width:960px){.span-8,.span-6,.span-4{grid-column:span 12}.stats-grid{gap:12px}.mini-chart{height:210px}.bar-row,.league-row{grid-template-columns:minmax(120px,.75fr) minmax(0,1.5fr) minmax(86px,auto)}}
     @media(max-width:640px){.page-shell{padding:24px 16px 40px}.stat-panel{padding:16px;border-radius:20px}.panel-head{flex-direction:column;margin-bottom:12px}.insight-item{grid-template-columns:auto minmax(0,1fr);gap:10px}.item-value{grid-column:2;text-align:left}.bar-row{grid-template-columns:1fr;gap:6px}.bar-value{text-align:left}.mini-chart{gap:5px;padding:10px;height:190px}.chart-label{font-size:.55rem}.hero-note{display:none}}
   </style>
   <script src="header.js"></script>
@@ -42,11 +42,11 @@
       <div class="hero-copy">
         <span class="section-kicker">Live Statistics</span>
         <h1 class="page-title">The season story, generated from Firebase.</h1>
-        <p class="page-subtitle">Every number below is calculated in the browser from squads, prices, points, captain picks, vice-captain picks, IPL teams, and MOTM counts. Update Firebase once and this page updates automatically.</p>
+        <p class="page-subtitle">Every number below is calculated in the browser from squads, prices, official fantasy points, captain picks, vice-captain picks, IPL teams, and MOTM counts. Update Firebase once and this page updates automatically.</p>
       </div>
       <div class="hero-side">
         <div class="metric-strip">
-          <div class="metric-card"><span class="metric-label">Matches Counted</span><span class="metric-value" id="metric-matches">—</span><span class="metric-note">Derived by summing recorded MOTM awards, one award per completed match.</span></div>
+          <div class="metric-card"><span class="metric-label">Top Scorer</span><span class="metric-value" id="metric-top-scorer">—</span><span class="metric-note">Highest official fantasy points total before leadership multipliers.</span></div>
           <div class="metric-card"><span class="metric-label">Leader Margin</span><span class="metric-value" id="metric-margin">—</span><span class="metric-note">Gap from first place to second place.</span></div>
           <div class="metric-card"><span class="metric-label">Tightest Gap</span><span class="metric-value" id="metric-tightest">—</span><span class="metric-note">Smallest points gap between adjacent teams.</span></div>
         </div>
@@ -132,7 +132,6 @@
     function buildStats(teams, motm) {
       const standings = FTMS.map(ft => calcTeam(ft.k, teams[ft.k] || {}, motm)).sort((a,b) => b.total - a.total);
       const allPlayers = standings.flatMap(t => t.players);
-      const matches = Object.values(motm).reduce((sum, count) => sum + Number(count || 0), 0);
       const gaps = standings.slice(0, -1).map((team, i) => ({ above: team, below: standings[i + 1], gap: team.total - standings[i + 1].total })).sort((a,b) => a.gap - b.gap);
       const iplTotals = Object.values(allPlayers.reduce((acc, p) => {
         const key = p.iplTeam || 'Unknown';
@@ -146,19 +145,22 @@
         acc[key].total += p.raw; acc[key].players += 1;
         return acc;
       }, {})).sort((a,b) => b.total - a.total);
-      const topPlayers = [...allPlayers].sort((a,b) => b.raw - a.raw).slice(0, 8);
+      const topPlayers = [...allPlayers].sort((a,b) => b.base - a.base).slice(0, 8);
       const steals = allPlayers.filter(p => p.priceLakhs > 0 && p.raw > 0).map(p => ({ ...p, ppl: p.raw / p.priceLakhs })).sort((a,b) => b.ppl - a.ppl).slice(0, 6);
       const busts = allPlayers.filter(p => p.priceLakhs >= 500).map(p => ({ ...p, ppl: p.priceLakhs > 0 ? p.raw / p.priceLakhs : 0 })).sort((a,b) => a.ppl - b.ppl || b.priceLakhs - a.priceLakhs).slice(0, 6);
-      const captainRows = standings.map(t => {
-        const cap = t.players.find(p => p.pk === t.captain);
-        const vc = t.players.find(p => p.pk === t.viceCaptain);
-        return { team: t, cap, vc, bonus: t.captainBonus + t.vcBonus };
-      }).sort((a,b) => b.bonus - a.bonus);
-      return { standings, allPlayers, matches, gaps, leaderGap: standings[0] && standings[1] ? standings[0].total - standings[1].total : 0, iplTotals, roleTotals, topPlayers, steals, busts, captainRows, zeroMotmTeams: standings.filter(t => t.motmTotal === 0) };
+      const captainPicks = standings.map(t => {
+        const player = t.players.find(p => p.pk === t.captain);
+        return { team: t, player, bonus: t.captainBonus };
+      });
+      const viceCaptainPicks = standings.map(t => {
+        const player = t.players.find(p => p.pk === t.viceCaptain);
+        return { team: t, player, bonus: t.vcBonus };
+      });
+      return { standings, allPlayers, gaps, leaderGap: standings[0] && standings[1] ? standings[0].total - standings[1].total : 0, iplTotals, roleTotals, topPlayers, steals, busts, captainPicks, viceCaptainPicks, zeroMotmTeams: standings.filter(t => t.motmTotal === 0) };
     }
 
     function render(stats) {
-      document.getElementById('metric-matches').textContent = n(stats.matches);
+      document.getElementById('metric-top-scorer').textContent = stats.topPlayers[0] ? stats.topPlayers[0].name : '—';
       document.getElementById('metric-margin').textContent = pointsLabel(stats.leaderGap);
       document.getElementById('metric-tightest').textContent = stats.gaps[0] ? pointsLabel(stats.gaps[0].gap) : '—';
       const root = document.getElementById('stats-root');
@@ -167,8 +169,12 @@
       const tight = stats.gaps[0];
       const midfield = stats.standings.slice(1, 9);
       const midfieldGap = midfield.length > 1 ? midfield[0].total - midfield[midfield.length - 1].total : 0;
-      const bestCap = stats.captainRows[0];
-      const worstCap = [...stats.captainRows].reverse()[0];
+      const captainPicksByBonus = [...stats.captainPicks].sort((a, b) => b.bonus - a.bonus);
+      const viceCaptainPicksByBonus = [...stats.viceCaptainPicks].sort((a, b) => b.bonus - a.bonus);
+      const bestCap = captainPicksByBonus[0];
+      const worstCap = captainPicksByBonus[captainPicksByBonus.length - 1];
+      const bestVc = viceCaptainPicksByBonus[0];
+      const worstVc = viceCaptainPicksByBonus[viceCaptainPicksByBonus.length - 1];
       const maxStanding = Math.max(...stats.standings.map(t => t.total), 1);
       const maxIpl = Math.max(...stats.iplTotals.map(t => t.total), 1);
       const maxRole = Math.max(...stats.roleTotals.map(r => r.total), 1);
@@ -178,7 +184,7 @@
           <article class="stat-panel span-8" style="--panel-accent:${leader.c}">
             <div class="panel-head"><div><h2 class="panel-title">League Race</h2><p class="panel-copy">Live leaderboard totals with captain, vice-captain, MOTM bonuses, and adjustments included.</p></div><span class="pill">${n(stats.allPlayers.length)} players</span></div>
             <div class="bars">
-              ${stats.standings.map((t, i) => `<div class="bar-row"><div class="bar-label">${i + 1}. ${esc(t.n)}</div><div class="bar-track"><div class="bar-fill" style="--bar-color:${t.c};width:${pct(t.total, maxStanding)}%"></div></div><div class="bar-value">${pointsLabel(t.total)}</div></div>`).join('')}
+              ${stats.standings.map((t, i) => `<div class="bar-row league-row"><div class="bar-label">${i + 1}. ${esc(t.n)}</div><div class="bar-track"><div class="bar-fill" style="--bar-color:${t.c};width:${pct(t.total, maxStanding)}%"></div></div><div class="bar-value">${pointsLabel(t.total)}</div></div>`).join('')}
             </div>
           </article>
 
@@ -188,24 +194,33 @@
               <div class="callout"><strong>${esc(leader.n)}</strong> lead with <strong>${pointsLabel(leader.total)}</strong>${runnerUp ? `, ${pointsLabel(stats.leaderGap)} clear of ${esc(runnerUp.n)}` : ''}.</div>
               ${tight ? `<div class="callout"><strong>Tightest race:</strong> ${esc(tight.above.n)} and ${esc(tight.below.n)} are separated by only <strong>${pointsLabel(tight.gap)}</strong>.</div>` : ''}
               <div class="callout"><strong>Midfield squeeze:</strong> ranks 2-${Math.min(9, stats.standings.length)} are inside <strong>${pointsLabel(midfieldGap)}</strong>.</div>
-              <div class="callout"><strong>Matches counted:</strong> ${n(stats.matches)} completed matches, calculated from total MOTM awards.</div>
               ${stats.zeroMotmTeams.length ? `<div class="callout"><strong>No MOTMs yet:</strong> ${stats.zeroMotmTeams.map(t => esc(t.n)).join(', ')}.</div>` : ''}
             </div>
           </article>
 
           <article class="stat-panel span-4">
-            <div class="panel-head"><div><h2 class="panel-title">Matches Counted</h2><p class="panel-copy">Sum of all player-of-the-match awards in Firebase.</p></div><span class="pill">MOTM</span></div>
-            <div class="big-number">${n(stats.matches)}</div><div class="big-caption">This avoids hardcoding a schedule count: every completed match should have exactly one MOTM entry, so the total awards equals matches processed.</div>
+            <div class="panel-head"><div><h2 class="panel-title">Top Scorer</h2><p class="panel-copy">Official fantasy points before leadership multipliers.</p></div><span class="pill">Rules</span></div>
+            <div class="big-number">${stats.topPlayers[0] ? pointsLabel(stats.topPlayers[0].base) : '—'}</div><div class="big-caption"><strong>${esc(stats.topPlayers[0]?.name || '—')}</strong> leads the best-player race using the same scorer logic as the standings page metric: stored fantasy points only, no C/VC multiplier.</div>
           </article>
 
           <article class="stat-panel span-4">
-            <div class="panel-head"><div><h2 class="panel-title">Best Captaincy</h2><p class="panel-copy">Extra points created by C + VC multipliers.</p></div><span class="pill">Multiplier</span></div>
-            <div class="big-number">${pointsLabel(bestCap?.bonus || 0)}</div><div class="big-caption"><strong>${esc(bestCap?.team.n || '—')}</strong> currently gains the most from captaincy. Captain: ${esc(bestCap?.cap?.name || '—')}; VC: ${esc(bestCap?.vc?.name || '—')}.</div>
+            <div class="panel-head"><div><h2 class="panel-title">Best Captain</h2><p class="panel-copy">Largest extra points from the 2x captain multiplier.</p></div><span class="pill">Captain</span></div>
+            <div class="big-number">${pointsLabel(bestCap?.bonus || 0)}</div><div class="big-caption"><strong>${esc(bestCap?.player?.name || '—')}</strong> is the top captain pick for ${esc(bestCap?.team.n || '—')} from ${pointsLabel(bestCap?.player?.raw || 0)} before the 2x multiplier.</div>
           </article>
 
           <article class="stat-panel span-4">
-            <div class="panel-head"><div><h2 class="panel-title">Lowest Captaincy Boost</h2><p class="panel-copy">Smallest C + VC multiplier return.</p></div><span class="pill">Risk</span></div>
-            <div class="big-number">${pointsLabel(worstCap?.bonus || 0)}</div><div class="big-caption"><strong>${esc(worstCap?.team.n || '—')}</strong> has the lowest current multiplier lift. Captain: ${esc(worstCap?.cap?.name || '—')}; VC: ${esc(worstCap?.vc?.name || '—')}.</div>
+            <div class="panel-head"><div><h2 class="panel-title">Best Vice Captain</h2><p class="panel-copy">Largest extra points from the 1.5x vice-captain multiplier.</p></div><span class="pill">VC</span></div>
+            <div class="big-number">${pointsLabel(bestVc?.bonus || 0)}</div><div class="big-caption"><strong>${esc(bestVc?.player?.name || '—')}</strong> is the top VC pick for ${esc(bestVc?.team.n || '—')} from ${pointsLabel(bestVc?.player?.raw || 0)} before the 1.5x multiplier.</div>
+          </article>
+
+          <article class="stat-panel span-4">
+            <div class="panel-head"><div><h2 class="panel-title">Worst Captain</h2><p class="panel-copy">Smallest extra points from a 2x captain multiplier.</p></div><span class="pill">Risk</span></div>
+            <div class="big-number">${pointsLabel(worstCap?.bonus || 0)}</div><div class="big-caption"><strong>${esc(worstCap?.player?.name || '—')}</strong> has the lowest captain boost for ${esc(worstCap?.team.n || '—')} from ${pointsLabel(worstCap?.player?.raw || 0)} before the 2x multiplier.</div>
+          </article>
+
+          <article class="stat-panel span-4">
+            <div class="panel-head"><div><h2 class="panel-title">Worst Vice Captain</h2><p class="panel-copy">Smallest extra points from a 1.5x vice-captain multiplier.</p></div><span class="pill">Risk</span></div>
+            <div class="big-number">${pointsLabel(worstVc?.bonus || 0)}</div><div class="big-caption"><strong>${esc(worstVc?.player?.name || '—')}</strong> has the lowest VC boost for ${esc(worstVc?.team.n || '—')} from ${pointsLabel(worstVc?.player?.raw || 0)} before the 1.5x multiplier.</div>
           </article>
 
           <article class="stat-panel span-6">
@@ -228,16 +243,10 @@
             <div class="bars">${stats.roleTotals.map(r => `<div class="bar-row"><div class="bar-label">${esc(r.role)}</div><div class="bar-track"><div class="bar-fill" style="width:${pct(r.total, maxRole)}%"></div></div><div class="bar-value">${pointsLabel(r.total)} · ${r.players}</div></div>`).join('')}</div>
           </article>
 
-          <article class="stat-panel span-12">
-            <div class="panel-head"><div><h2 class="panel-title">Captaincy Ledger</h2><p class="panel-copy">Raw C/VC player scores and the exact bonus created by their multiplier slots.</p></div><span class="pill">All Teams</span></div>
-            <div class="table-wrap"><table class="stats-table"><thead><tr><th>Team</th><th>Captain</th><th class="num">Captain Bonus</th><th>Vice Captain</th><th class="num">VC Bonus</th><th class="num">Total Boost</th></tr></thead><tbody>
-              ${stats.captainRows.map(r => `<tr><td>${esc(r.team.n)}</td><td>${esc(r.cap?.name || '—')} (${pointsLabel(r.cap?.raw || 0)})</td><td class="num gold">${pointsLabel(r.team.captainBonus)}</td><td>${esc(r.vc?.name || '—')} (${pointsLabel(r.vc?.raw || 0)})</td><td class="num gold">${pointsLabel(r.team.vcBonus)}</td><td class="num"><strong>${pointsLabel(r.bonus)}</strong></td></tr>`).join('')}
-            </tbody></table></div>
-          </article>
 
           <article class="stat-panel span-12">
-            <div class="panel-head"><div><h2 class="panel-title">Top Raw Players</h2><p class="panel-copy">Highest individual production before fantasy-team captain or vice-captain multipliers.</p></div><span class="pill">Leaderboard</span></div>
-            <ul class="insight-list">${stats.topPlayers.map((p, i) => row(i + 1, p.name, `${p.ownerName} · ${p.iplTeam || '—'} · ${p.role || '—'}${p.motmCount ? ` · ${p.motmCount} MOTM` : ''}`, pointsLabel(p.raw))).join('')}</ul>
+            <div class="panel-head"><div><h2 class="panel-title">Top Scorers</h2><p class="panel-copy">Highest official fantasy point totals before fantasy-team captain or vice-captain multipliers.</p></div><span class="pill">Leaderboard</span></div>
+            <ul class="insight-list">${stats.topPlayers.map((p, i) => row(i + 1, p.name, `${p.ownerName} · ${p.iplTeam || '—'} · ${p.role || '—'}`, pointsLabel(p.base))).join('')}</ul>
           </article>
         </div>`;
     }
